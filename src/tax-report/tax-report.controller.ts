@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, TaxReport } from '@prisma/client';
 import { TaxReportService } from './tax-report.service';
 
 @Controller('tax-report')
@@ -9,7 +9,7 @@ export class TaxReportController {
   @Post()
   async createTaxReport(
     @Body() createTaxReportDto: Prisma.TaxReportCreateInput,
-  ) {
+  ): Promise<TaxReport> {
     return this.taxReportService.createTaxReport(createTaxReportDto);
   }
 }
