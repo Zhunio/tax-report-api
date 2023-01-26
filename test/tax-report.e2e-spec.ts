@@ -1,9 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { Prisma } from '@prisma/client';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 
-describe('AppController (e2e)', () => {
+describe('TaxController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -15,14 +16,19 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/tax-report (POST)', () => {
+    const createTaxReportDto: Prisma.TaxReportCreateInput = {
+      fiscalQuarter: 1,
+      fiscalYear: 2020,
+    };
+
     return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+      .post('/tax-report')
+      .send(createTaxReportDto)
+      .expect(201);
   });
 
   afterAll(async () => {
     await app.close();
-  })
+  });
 });
