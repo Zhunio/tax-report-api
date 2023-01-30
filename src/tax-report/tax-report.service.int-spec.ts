@@ -1,22 +1,27 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import { AppModule } from '../app.module';
+import { PrismaService } from '../prisma/prisma.service';
 import { TaxReportController } from './tax-report.controller';
 import { TaxReportService } from './tax-report.service';
 
 describe('TaxReportController', () => {
   let taxReportController: TaxReportController;
   let taxReportService: TaxReportService;
+  let prismaService: PrismaService;
 
   const today = new Date();
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const app: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
+    prismaService = app.get(PrismaService);
     taxReportController = app.get(TaxReportController);
     taxReportService = app.get(TaxReportService);
+
+    await prismaService.cleanDatabase();
   });
 
   it('should create', () => {
