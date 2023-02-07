@@ -4,7 +4,7 @@ import { AppModule } from '../app.module';
 import { PrismaService } from '../prisma/prisma.service';
 import { TaxReportController } from './tax-report.controller';
 
-describe('TaxReportController', () => {
+describe('TaxReportController (Integration)', () => {
   let taxReportController: TaxReportController;
   let prismaService: PrismaService;
 
