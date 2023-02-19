@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import { AppModule } from '../app.module';
 import { PrismaService } from '../prisma/prisma.service';
-import { TaxReportService } from './tax-report.service';
+import { TaxReportController } from './tax-report.controller';
 
-describe('TaxReportService (Integration)', () => {
-  let taxReportService: TaxReportService;
+describe('TaxReportController (Integration)', () => {
+  let taxReportController: TaxReportController;
   let prismaService: PrismaService;
 
   const today = new Date();
@@ -16,13 +16,13 @@ describe('TaxReportService (Integration)', () => {
     }).compile();
 
     prismaService = app.get(PrismaService);
-    taxReportService = app.get(TaxReportService);
+    taxReportController = app.get(TaxReportController);
 
     await prismaService.cleanDatabase();
   });
 
   it('should create', () => {
-    expect(taxReportService).toBeDefined();
+    expect(taxReportController).toBeDefined();
   });
 
   describe('createTaxReport()', () => {
@@ -31,7 +31,7 @@ describe('TaxReportService (Integration)', () => {
         fiscalQuarter: 1,
         fiscalYear: today.getFullYear(),
       };
-      const taxReport = await taxReportService.createTaxReport(
+      const taxReport = await taxReportController.createTaxReport(
         createTaxReportDto,
       );
 
@@ -47,8 +47,12 @@ describe('TaxReportService (Integration)', () => {
         fiscalQuarter: 1,
         fiscalYear: today.getFullYear(),
       };
-      const { id } = await taxReportService.createTaxReport(createTaxReportDto);
-      const taxReportDeleted = await taxReportService.deleteTaxReport(id);
+      const { id } = await taxReportController.createTaxReport(
+        createTaxReportDto,
+      );
+      const taxReportDeleted = await taxReportController.deleteTaxReport(
+        id.toString(),
+      );
       const taxReportFound = await prismaService.taxReport.findFirst({
         where: { id },
       });
@@ -65,7 +69,7 @@ describe('TaxReportService (Integration)', () => {
       const deleteTaxReportId = 1;
 
       try {
-        await taxReportService.deleteTaxReport(deleteTaxReportId);
+        await taxReportController.deleteTaxReport(deleteTaxReportId.toString());
       } catch (error) {
         expect(error).toEqual(expect.any(Error));
       }

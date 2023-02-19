@@ -5,6 +5,7 @@ import { TaxReportService } from './tax-report.service';
 
 class MockTaxReportService {
   createTaxReport = jest.fn();
+  deleteTaxReport = jest.fn();
 }
 
 describe('TaxReportController', () => {
@@ -27,15 +28,43 @@ describe('TaxReportController', () => {
     expect(taxReportController).toBeDefined();
   });
 
-  it('should create tax report', async () => {
-    const createTaxReportDto: Prisma.TaxReportCreateInput = {
-      fiscalQuarter: 1,
-      fiscalYear: 2020,
-    };
-    await taxReportController.createTaxReport(createTaxReportDto);
+  describe('createTaxReport()', () => {
+    it('should create tax report', async () => {
+      const createTaxReportDto: Prisma.TaxReportCreateInput = {
+        fiscalQuarter: 1,
+        fiscalYear: 2020,
+      };
+      await taxReportController.createTaxReport(createTaxReportDto);
 
-    expect(taxReportService.createTaxReport).toHaveBeenCalledWith(
-      createTaxReportDto,
-    );
+      expect(taxReportService.createTaxReport).toHaveBeenCalledWith(
+        createTaxReportDto,
+      );
+    });
+  });
+
+  describe('deleteTaxReport()', () => {
+    it('should delete tax report', async () => {
+      const deleteTaxReportId = 1;
+
+      await taxReportController.deleteTaxReport(deleteTaxReportId.toString());
+
+      expect(taxReportService.deleteTaxReport).toHaveBeenCalledWith(
+        deleteTaxReportId,
+      );
+    });
+
+    it('should throw an error when trying to delete report that does not exist', async () => {
+      jest.spyOn(taxReportService, 'deleteTaxReport').mockImplementation(() => {
+        throw new Error();
+      });
+
+      const deleteTaxReportId = 1;
+
+      try {
+        await taxReportController.deleteTaxReport(deleteTaxReportId.toString());
+      } catch (error) {
+        expect(error).toEqual(expect.any(Error));
+      }
+    });
   });
 });

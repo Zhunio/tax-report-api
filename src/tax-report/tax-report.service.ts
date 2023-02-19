@@ -13,4 +13,10 @@ export class TaxReportService {
       data: createTaxReportDto,
     });
   }
+
+  async deleteTaxReport(taxReportId: number): Promise<TaxReport> {
+    return this.prisma.taxReport.delete({
+      where: { id: taxReportId },
+    });
+  }
 }
