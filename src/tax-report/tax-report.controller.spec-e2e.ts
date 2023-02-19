@@ -2,7 +2,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import * as request from 'supertest';
-import { AppModule } from '../src/app.module';
+import { AppModule } from '../app/app.module';
 
 describe('TaxController (e2e)', () => {
   let app: INestApplication;

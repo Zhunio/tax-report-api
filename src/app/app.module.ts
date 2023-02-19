@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
+import { TaxReportModule } from '../tax-report/tax-report.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TaxReportModule } from './tax-report/tax-report.module';
 
 @Module({
   imports: [TaxReportModule],
