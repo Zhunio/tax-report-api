@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
-import { AppModule } from '../app.module';
+import { AppModule } from '../app/app.module';
 import { PrismaService } from '../prisma/prisma.service';
 import { TaxReportService } from './tax-report.service';
 
