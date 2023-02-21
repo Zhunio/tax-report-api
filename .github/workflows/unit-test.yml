@@ -14,6 +14,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      PG_DATABASE_URL: postgresql://postgres:123@localhost:5433/tax-report?schema=public
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
