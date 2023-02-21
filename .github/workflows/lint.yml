@@ -1,6 +1,14 @@
 name: Lint
 
-on: [push]
+on: 
+  push:
+    branches: 
+      - 'main'
+      - 'develop'
+  pull_requests:
+    branches:
+      - 'main'
+      - 'develop'
 
 jobs:
   build:
