@@ -18,9 +18,7 @@ describe('TaxReportService (Integration)', () => {
 
     prismaService = app.get(PrismaService);
     taxReportService = app.get(TaxReportService);
-  });
-
-  beforeEach(async () => {
+    
     await prismaService.cleanDatabase();
   });
 
@@ -39,7 +37,7 @@ describe('TaxReportService (Integration)', () => {
 
     it('should throw an error when trying to create duplicate tax report', async () => {
       const taxReportDto: Prisma.TaxReportCreateInput = {
-        fiscalQuarter: 1,
+        fiscalQuarter: 2,
         fiscalYear: today.getFullYear(),
       };
 
@@ -53,7 +51,7 @@ describe('TaxReportService (Integration)', () => {
   describe('deleteTaxReport()', () => {
     it('should delete tax report', async () => {
       const taxReportDto: Prisma.TaxReportCreateInput = {
-        fiscalQuarter: 1,
+        fiscalQuarter: 3,
         fiscalYear: today.getFullYear(),
       };
       const { id } = await taxReportService.createTaxReport(taxReportDto);

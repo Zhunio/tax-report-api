@@ -18,9 +18,7 @@ describe('TaxReportController (Integration)', () => {
 
     prismaService = app.get(PrismaService);
     taxReportController = app.get(TaxReportController);
-  });
 
-  beforeEach(async () => {
     await prismaService.cleanDatabase();
   });
 
@@ -39,7 +37,7 @@ describe('TaxReportController (Integration)', () => {
 
     it('should throw an error when trying to create duplicate tax report', async () => {
       const taxReportDto: Prisma.TaxReportCreateInput = {
-        fiscalQuarter: 1,
+        fiscalQuarter: 2,
         fiscalYear: today.getFullYear(),
       };
 
@@ -54,7 +52,7 @@ describe('TaxReportController (Integration)', () => {
   describe('deleteTaxReport()', () => {
     it('should delete tax report', async () => {
       const taxReportDto: Prisma.TaxReportCreateInput = {
-        fiscalQuarter: 1,
+        fiscalQuarter: 3,
         fiscalYear: today.getFullYear(),
       };
 
@@ -69,7 +67,7 @@ describe('TaxReportController (Integration)', () => {
     });
 
     it('should throw an error when trying to delete report that does not exist', () => {
-      const deleteTaxReportId = 1;
+      const deleteTaxReportId = -1;
 
       expect(taxReportController.deleteTaxReport(`${deleteTaxReportId}`)).rejects.toThrow(Error);
     });

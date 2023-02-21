@@ -12,7 +12,7 @@ describe('TaxController (e2e)', () => {
 
   const today = new Date();
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -23,9 +23,6 @@ describe('TaxController (e2e)', () => {
     req = request(app.getHttpServer());
 
     await app.init();
-  });
-
-  beforeEach(async () => {
     await prismaService.cleanDatabase();
   });
 
@@ -46,7 +43,7 @@ describe('TaxController (e2e)', () => {
 
     it('should throw an error when trying to create duplicate tax report', async () => {
       const taxReportDto: Prisma.TaxReportCreateInput = {
-        fiscalQuarter: 1,
+        fiscalQuarter: 2,
         fiscalYear: today.getFullYear(),
       };
 
@@ -61,7 +58,7 @@ describe('TaxController (e2e)', () => {
   describe('/tax-report (DELETE)', () => {
     it('should delete tax report', async () => {
       const taxReportDto: Prisma.TaxReportCreateInput = {
-        fiscalQuarter: 1,
+        fiscalQuarter: 3,
         fiscalYear: today.getFullYear(),
       };
 
@@ -76,7 +73,7 @@ describe('TaxController (e2e)', () => {
       // disable logging to not see error in terminal
       app.useLogger(false);
 
-      const { statusCode, error } = await req.delete('/tax-report/1');
+      const { statusCode, error } = await req.delete('/tax-report/-1');
 
       expect(statusCode).toEqual(HttpStatus.INTERNAL_SERVER_ERROR);
       expect(error).toEqual(expect.any(Error));
