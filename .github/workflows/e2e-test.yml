@@ -1,4 +1,4 @@
-name: Format
+name: e2e tests
 
 on: 
   push:
