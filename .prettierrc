@@ -1,4 +1,12 @@
 {
   "singleQuote": true,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "overrides": [
+    {
+      "files": ["*.spec.ts", "*.spec-int.ts", "*.spec-e2e.ts"],
+      "options": {
+        "printWidth": 100
+      }
+    }
+  ]
 }
