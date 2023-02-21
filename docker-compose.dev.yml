@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  tax-report-dev-db:
+  postgres:
     image: postgres:15.1-alpine
     restart: always
     environment:
@@ -10,13 +10,8 @@ services:
       POSTGRES_PASSWORD: 123
     ports:
       - 5432:5432
-    volumes:
-      - tax-report-dev-db-data:/var/lib/postgresql/data
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
-volumes:
-  tax-report-dev-db-data:
-    driver: local
