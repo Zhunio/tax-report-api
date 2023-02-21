@@ -8,9 +8,9 @@ export class TaxReportController {
 
   @Post()
   async createTaxReport(
-    @Body() createTaxReportDto: Prisma.TaxReportCreateInput,
+    @Body() taxReportDto: Prisma.TaxReportCreateInput,
   ): Promise<TaxReport> {
-    return this.taxReportService.createTaxReport(createTaxReportDto);
+    return this.taxReportService.createTaxReport(taxReportDto);
   }
 
   @Delete(':taxReportId')

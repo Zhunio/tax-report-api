@@ -1,49 +1,52 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Prisma } from '@prisma/client';
+import { Prisma, TaxReport } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { DuplicateTaxReportException } from './tax-report.exception';
 import { TaxReportService } from './tax-report.service';
 
 class MockPrismaService {
   taxReport = {
     create: jest.fn(),
     delete: jest.fn(),
+    findFirst: jest.fn(),
   };
 }
+
+const { spyOn } = jest;
 
 describe('TaxReportService', () => {
   let taxReportService: TaxReportService;
   let prismaService: PrismaService;
 
-  const today = new Date();
-
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      providers: [
-        TaxReportService,
-        { provide: PrismaService, useClass: MockPrismaService },
-      ],
+      providers: [TaxReportService, { provide: PrismaService, useClass: MockPrismaService }],
     }).compile();
 
     taxReportService = app.get<TaxReportService>(TaxReportService);
     prismaService = app.get<PrismaService>(PrismaService);
   });
 
-  it('should create', () => {
-    expect(taxReportService).toBeDefined();
-  });
-
   describe('createTaxReport()', () => {
     it('should create tax report', async () => {
-      const createTaxReportDto: Prisma.TaxReportCreateInput = {
-        fiscalQuarter: 1,
-        fiscalYear: today.getFullYear(),
-      };
+      spyOn(prismaService.taxReport, 'findFirst').mockReturnValue(null);
 
-      await taxReportService.createTaxReport(createTaxReportDto);
+      const taxReportDto = {} as Prisma.TaxReportCreateInput;
+      await taxReportService.createTaxReport(taxReportDto);
 
       expect(prismaService.taxReport.create).toHaveBeenCalledWith({
-        data: createTaxReportDto,
+        data: taxReportDto,
       });
+    });
+
+    it('should throw an error when trying to create duplicate tax report', async () => {
+      const taxReport = {} as TaxReport;
+      const taxReportDto = {} as Prisma.TaxReportCreateInput;
+      spyOn(prismaService.taxReport, 'findFirst').mockResolvedValue(taxReport);
+
+      expect(taxReportService.createTaxReport(taxReportDto)).rejects.toThrow(
+        DuplicateTaxReportException,
+      );
     });
   });
 
@@ -54,24 +57,17 @@ describe('TaxReportService', () => {
       await taxReportService.deleteTaxReport(deleteTaxReportId);
 
       expect(prismaService.taxReport.delete).toHaveBeenCalledWith({
-        where: {
-          id: deleteTaxReportId,
-        },
+        where: { id: deleteTaxReportId },
       });
     });
 
     it('should throw an error when trying to delete report that does not exist', async () => {
-      jest.spyOn(prismaService.taxReport, 'delete').mockImplementation(() => {
+      spyOn(prismaService.taxReport, 'delete').mockImplementation(() => {
         throw new Error();
       });
-
       const deleteTaxReportId = 1;
 
-      try {
-        await taxReportService.deleteTaxReport(deleteTaxReportId);
-      } catch (error) {
-        expect(error).toEqual(expect.any(Error));
-      }
+      expect(taxReportService.deleteTaxReport(deleteTaxReportId)).rejects.toThrow(Error);
     });
   });
 });

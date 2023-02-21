@@ -15,10 +15,6 @@ describe('PrismaService (Integration)', () => {
     prismaService = app.get(PrismaService);
   });
 
-  it('should create', () => {
-    expect(prismaService).toBeDefined();
-  });
-
   it('should clean database', async () => {
     await prismaService.taxReport.createMany({
       data: [
