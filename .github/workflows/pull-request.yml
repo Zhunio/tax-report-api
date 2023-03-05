@@ -1,8 +1,9 @@
-name: e2e tests
+name: pull-request
+run-name: Pull Request
 
-on: 
+on:
   push:
-    branches: 
+    branches:
       - 'main'
       - 'develop'
   pull_request:
@@ -10,11 +11,14 @@ on:
       - 'main'
       - 'develop'
 
+env:
+  PG_DATABASE_URL: ${{ vars.PG_DATABASE_URL }}
+  TAX_REPORT_MEDIA_PATH: ${{ HOME }}/tax-report-documents
+
 jobs:
-  dev:
+  check-pull-request:
     runs-on: ubuntu-latest
-    environment: DEV
-    
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -22,4 +26,6 @@ jobs:
           node-version: '18.x'
           cache: 'npm'
       - run: npm ci
-      - run: npm run test:e2e
+      - run: npm run format
+      - run: npm run lint
+      - run: npm run test:all
