@@ -3,12 +3,12 @@ import { Prisma } from '@prisma/client';
 import { FileController } from '../file.controller';
 import { FileService } from '../file.service';
 
-const { spyOn } = jest;
+const { spyOn, fn } = jest;
 
 class MockFileService {
-  createFile() {}
-  uploadFile() {}
-  getUploadFilePath() {}
+  createFile = fn();
+  uploadFile = fn();
+  getUploadFilePath = fn();
 }
 
 describe('FileController', () => {

@@ -7,12 +7,12 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { DuplicateFileException, UploadFileException } from '../file.exception';
 import { FileService } from '../file.service';
 
-const { spyOn } = jest;
+const { spyOn, fn } = jest;
 
 class MockPrismaService {
   file = {
-    create() {},
-    findFirst() {},
+    create: fn(),
+    findFirst: fn(),
   };
 }
 
