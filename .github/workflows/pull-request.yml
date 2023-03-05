@@ -1,4 +1,4 @@
-name: pull-request
+name: Pull Request Workflow
 run-name: Pull Request
 
 on:
