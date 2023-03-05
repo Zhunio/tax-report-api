@@ -13,7 +13,7 @@ on:
 
 env:
   PG_DATABASE_URL: ${{ vars.PG_DATABASE_URL }}
-  TAX_REPORT_MEDIA_PATH: ${{ HOME }}/tax-report-documents
+  TAX_REPORT_MEDIA_PATH: ${ HOME }/tax-report-documents
 
 jobs:
   check-pull-request:
