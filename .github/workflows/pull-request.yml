@@ -1,5 +1,4 @@
 name: Pull Request Workflow
-run-name: Pull Request
 
 on:
   push:
@@ -16,7 +15,7 @@ env:
   TAX_REPORT_MEDIA_PATH: ${ HOME }/tax-report-documents
 
 jobs:
-  check-pull-request:
+  pull-request-job:
     runs-on: ubuntu-latest
 
     steps:
