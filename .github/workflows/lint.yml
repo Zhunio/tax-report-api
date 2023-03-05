@@ -11,8 +11,9 @@ on:
       - 'develop'
 
 jobs:
-  build:
+  dev:
     runs-on: ubuntu-latest
+    environment: DEV
 
     steps:
       - uses: actions/checkout@v3

@@ -11,11 +11,9 @@ on:
       - 'develop'
 
 jobs:
-  build:
+  dev:
     runs-on: ubuntu-latest
-
-    env:
-      PG_DATABASE_URL: postgresql://postgres:123@localhost:5433/tax-report?schema=public
+    environment: DEV
 
     steps:
       - uses: actions/checkout@v3
