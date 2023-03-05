@@ -12,3 +12,9 @@ model TaxReport {
   fiscalQuarter Int
   fiscalYear Int
 }
+
+model File {
+  id Int @default(autoincrement()) @id
+  fileName String
+  fileDestination String
+}
