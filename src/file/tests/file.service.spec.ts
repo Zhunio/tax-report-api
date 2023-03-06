@@ -4,7 +4,11 @@ import * as fsExtra from 'fs-extra';
 import { join } from 'path';
 import { EnvService } from '../../env/env.service';
 import { PrismaService } from '../../prisma/prisma.service';
-import { DuplicateFileException, UploadFileException } from '../file.exception';
+import {
+  DeleteFileException,
+  DuplicateFileException,
+  UploadFileException,
+} from '../file.exception';
 import { FileService } from '../file.service';
 
 const { spyOn, fn } = jest;
@@ -13,6 +17,7 @@ class MockPrismaService {
   file = {
     create: fn(),
     findFirst: fn(),
+    delete: fn(),
   };
 }
 
@@ -58,6 +63,26 @@ describe('FileService', () => {
       await fileService.createFile(fileDto);
 
       expect(prismaService.file.create).toHaveBeenCalledWith({ data: fileDto });
+    });
+  });
+
+  describe('deleteFile()', () => {
+    it('should throw an error when trying to delete a file that does not exists', async () => {
+      const file = { id: -1 } as File;
+
+      spyOn(fileService as any, 'findFile').mockResolvedValue(null);
+
+      await expect(fileService.deleteFile(file.id)).rejects.toThrow(DeleteFileException);
+    });
+
+    it('should delete file', async () => {
+      const file = { id: 1 } as File;
+
+      spyOn(fileService as any, 'findFile').mockResolvedValue(file);
+      spyOn(prismaService.file, 'delete').mockResolvedValue(file);
+
+      const fileDeleted = await fileService.deleteFile(file.id);
+      expect(fileDeleted).toEqual(file);
     });
   });
 
@@ -114,6 +139,26 @@ describe('FileService', () => {
       const uploadFilePath = fileService.getUploadFilePath(fileDto);
 
       expect(uploadFilePath).toEqual(join(mediaPath, fileDto.fileDestination, fileDto.fileName));
+    });
+  });
+
+  describe('findFile()', () => {
+    it('should return null when there is a file', async () => {
+      const fileFound = null;
+      const fileId = -1;
+
+      spyOn(prismaService.file, 'findFirst').mockResolvedValue(fileFound);
+
+      expect(await (fileService as any).findFile(fileId)).toBeNull();
+    });
+
+    it('should return file', async () => {
+      const fileFound = {} as File;
+      const fileId = -1;
+
+      spyOn(prismaService.file, 'findFirst').mockResolvedValue(fileFound);
+
+      expect(await (fileService as any).findFile(fileId)).toEqual(fileFound);
     });
   });
 

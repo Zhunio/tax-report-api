@@ -4,7 +4,7 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { PrismaService } from '../../prisma/prisma.service';
 import { FileController } from '../file.controller';
-import { DuplicateFileException } from '../file.exception';
+import { DeleteFileException, DuplicateFileException } from '../file.exception';
 import { FileModule } from '../file.module';
 
 describe('FileController (Integration)', () => {
@@ -56,4 +56,26 @@ describe('FileController (Integration)', () => {
       expect(file.fileDestination).toEqual(fileDto.fileDestination);
     });
   });
+
+  describe('deleteFile()', () => {
+    it('should throw an error when trying to delete file that does not exists', async () => {
+      const fileId = -1;
+
+      await expect(fileController.deleteFile(fileId.toString())).rejects.toThrow(DeleteFileException);
+    })
+
+    it('should delete file', async () => {
+      const fileDto: Prisma.FileCreateInput = {
+        fileName: 'delete-file.txt',
+        fileDestination: '/test/file/controller',
+      };
+
+      const file = await fileController.createFile(fileDto, fileMulter);
+      const fileDeleted = await fileController.deleteFile(file.id.toString());
+
+      expect(file.id).toEqual(fileDeleted.id);
+      expect(file.fileName).toEqual(fileDeleted.fileName);
+      expect(file.fileDestination).toEqual(fileDeleted.fileDestination);
+    })
+  })
 });

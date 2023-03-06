@@ -4,7 +4,11 @@ import { ensureFile, writeFile } from 'fs-extra';
 import { format, join, parse } from 'path';
 import { EnvService } from '../env/env.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { DuplicateFileException, UploadFileException } from './file.exception';
+import {
+  DeleteFileException,
+  DuplicateFileException,
+  UploadFileException,
+} from './file.exception';
 
 @Injectable()
 export class FileService {
@@ -21,6 +25,20 @@ export class FileService {
 
     return this.prismaService.file.create({
       data: fileDto,
+    });
+  }
+
+  async deleteFile(fileId: number) {
+    const isFileFound = await this.findFile(fileId);
+
+    if (!isFileFound) {
+      throw new DeleteFileException();
+    }
+
+    return this.prismaService.file.delete({
+      where: {
+        id: fileId,
+      },
     });
   }
 
@@ -59,6 +77,14 @@ export class FileService {
       dir: uploadFilePath.dir,
       name: uploadFilePath.name,
       ext: uploadFilePath.ext,
+    });
+  }
+
+  private findFile(fileId: number): Promise<File | null> {
+    return this.prismaService.file.findFirst({
+      where: {
+        id: fileId,
+      },
     });
   }
 

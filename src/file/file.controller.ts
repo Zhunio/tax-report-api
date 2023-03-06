@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Delete,
+  Param,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -21,5 +23,10 @@ export class FileController {
   ): Promise<File> {
     await this.fileService.uploadFile(fileDto, file.buffer);
     return this.fileService.createFile(fileDto);
+  }
+
+  @Delete(':id')
+  deleteFile(@Param('id') fileId: string): Promise<File> {
+    return this.fileService.deleteFile(parseInt(fileId, 10));
   }
 }
