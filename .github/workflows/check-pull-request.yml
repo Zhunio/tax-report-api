@@ -1,0 +1,43 @@
+name: Check Pull Request
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'develop'
+  pull_request:
+    branches:
+      - 'main'
+      - 'develop'
+
+env:
+  TRA_POSTGRES_DB: ${{ vars.TRA_POSTGRES_DB }}
+  TRA_POSTGRES_USER: ${{ vars.TRA_POSTGRES_USER }}
+  TRA_POSTGRES_PASSWORD: ${{ vars.TRA_POSTGRES_PASSWORD }}
+  TRA_DATABASE_URL: ${{ vars.TRA_DATABASE_URL }}
+  TRA_MEDIA_PATH: ${ HOME }/tax-report-documents
+
+jobs:
+  check-pull-request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+      - name: Install Dependencies
+        run: npm ci
+      - name: Format code
+        run: npm run format
+      - name: Run linter
+        run: npm run lint
+      - name: Start Postgres container
+        run: docker-compose up -d
+      - name: Apply migrations to Postgres database
+        run: npx prisma migrate deploy
+      - name: Run tests
+        run: npm run test
