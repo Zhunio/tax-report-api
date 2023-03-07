@@ -15,3 +15,9 @@ export class UploadFileException extends HttpException {
     super('Upload file exception', HttpStatus.INTERNAL_SERVER_ERROR, options);
   }
 }
+
+export class DeleteFileException extends HttpException {
+  constructor() {
+    super('File does not exists', HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}

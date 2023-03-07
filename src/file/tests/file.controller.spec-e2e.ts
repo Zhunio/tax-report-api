@@ -70,4 +70,31 @@ describe('FileController (e2e)', () => {
       expect(body.fileDestination).toBe(fileDto.fileDestination);
     });
   });
+
+  describe('deleteFile()', () => {
+    it('should throw an error when trying to delete file that does not exists', async () => {
+      const fileId = -1;
+      const { statusCode } = await req.delete(`/file/${fileId}`);
+
+      expect(statusCode).toEqual(HttpStatus.INTERNAL_SERVER_ERROR);
+    });
+
+    it('should delete file', async () => {
+      const fileDto: Prisma.FileCreateInput = {
+        fileName: 'delete-file.txt',
+        fileDestination: '/test/file/e2e',
+      };
+
+      const fileCreatedRes = await req
+        .post('/file')
+        .field('fileName', fileDto.fileName)
+        .field('fileDestination', fileDto.fileDestination)
+        .attach('file', './src/file/tests/something.txt');
+
+      const { body, statusCode } = await req.delete(`/file/${fileCreatedRes.body.id}`);
+
+      expect(statusCode).toEqual(HttpStatus.OK);
+      expect(body).toEqual(fileCreatedRes.body);
+    });
+  });
 });

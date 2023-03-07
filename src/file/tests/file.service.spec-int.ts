@@ -4,7 +4,7 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { EnvService } from '../../env/env.service';
 import { PrismaService } from '../../prisma/prisma.service';
-import { DuplicateFileException } from '../file.exception';
+import { DeleteFileException, DuplicateFileException } from '../file.exception';
 import { FileModule } from '../file.module';
 import { FileService } from '../file.service';
 
@@ -58,6 +58,26 @@ describe('FileService (Integration)', () => {
       expect(file.fileDestination).toEqual(fileDto.fileDestination);
     });
   });
+
+  describe('deleteFile()', () => {
+    it('should throw an error when trying to delete a file that does not exists', async () => {
+      const fileId = -1;
+
+      await expect(fileService.deleteFile(fileId)).rejects.toThrow(DeleteFileException);
+    })
+
+    it('should delete file', async () => {
+      const fileDto: Prisma.FileCreateInput = {
+        fileName: 'create-file.txt',
+        fileDestination: '/test/file/service',
+      };
+
+      const file = await fileService.createFile(fileDto);
+      expect(file.id).toEqual(expect.any(Number));
+      expect(file.fileName).toEqual(fileDto.fileName);
+      expect(file.fileDestination).toEqual(fileDto.fileDestination);
+    })
+  })
 
   describe('uploadFile()', () => {
     it('should throw an error when trying to upload duplicate file', async () => {
