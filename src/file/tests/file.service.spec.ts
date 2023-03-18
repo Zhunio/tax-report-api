@@ -1,15 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { File, Prisma } from '@prisma/client';
 import * as fsExtra from 'fs-extra';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { EnvService } from '../../env/env.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
   DeleteFileException,
   DuplicateFileException,
+  EditFileThatDoesNotExistException,
+  OverrideFileException,
   UploadFileException,
 } from '../file.exception';
 import { FileService } from '../file.service';
+import { FileUpdateDto } from '../models/file.model';
 
 const { spyOn, fn } = jest;
 
@@ -18,6 +22,7 @@ class MockPrismaService {
     create: fn(),
     findFirst: fn(),
     delete: fn(),
+    update: fn(),
   };
 }
 
@@ -32,6 +37,8 @@ describe('FileService', () => {
   let prismaService: PrismaService;
   let envService: EnvService;
 
+  let fileBuffer: Buffer;
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -44,6 +51,8 @@ describe('FileService', () => {
     fileService = module.get(FileService);
     prismaService = module.get(PrismaService);
     envService = module.get(EnvService);
+
+    fileBuffer = await readFile(join(__dirname, 'something.txt'));
   });
 
   describe('createFile()', () => {
@@ -52,17 +61,67 @@ describe('FileService', () => {
       const duplicateFileDto = {} as File;
       spyOn(fileService as any, 'findDuplicateFile').mockResolvedValue(duplicateFileDto);
 
-      await expect(fileService.createFile(fileDto)).rejects.toThrow(DuplicateFileException);
+      await expect(fileService.createFile(fileDto, fileBuffer)).rejects.toThrow(
+        DuplicateFileException,
+      );
     });
 
     it('should create file', async () => {
       spyOn(fileService as any, 'findDuplicateFile').mockResolvedValue(null);
+      spyOn(fileService as any, 'uploadFile').mockImplementation(fn);
       spyOn(prismaService.file, 'create');
 
       const fileDto = {} as Prisma.FileCreateInput;
-      await fileService.createFile(fileDto);
+      await fileService.createFile(fileDto, fileBuffer);
 
+      expect((fileService as any).findDuplicateFile).toHaveBeenCalledWith(fileDto);
       expect(prismaService.file.create).toHaveBeenCalledWith({ data: fileDto });
+      expect((fileService as any).uploadFile).toHaveBeenCalledWith(fileDto, fileBuffer);
+    });
+  });
+
+  describe('editFile()', () => {
+    it('should throw an error when trying to edit file that does not exists', async () => {
+      const fileId = -1;
+      const fileDto = {} as FileUpdateDto;
+
+      spyOn(fileService as any, 'findFile').mockResolvedValue(null);
+
+      await expect(fileService.editFile(fileId, fileDto, fileBuffer)).rejects.toThrow(
+        EditFileThatDoesNotExistException,
+      );
+    });
+
+    it('should throw an error when edited file attempts to override another file', async () => {
+      const fileId = 1;
+      const fileDto = {} as FileUpdateDto;
+      const file = {} as File;
+
+      spyOn(fileService as any, 'findFile').mockResolvedValue(file);
+      spyOn(fileService as any, 'willOverrideFile').mockResolvedValue(true);
+
+      await expect(fileService.editFile(fileId, fileDto, fileBuffer)).rejects.toThrow(
+        OverrideFileException,
+      );
+    });
+
+    it('should edit file', async () => {
+      const fileId = 1;
+      const fileDto = {} as FileUpdateDto;
+      const file = {} as File;
+
+      spyOn(fileService as any, 'findFile').mockResolvedValue(file);
+      spyOn(fileService as any, 'willOverrideFile').mockResolvedValue(false);
+      spyOn(fileService as any, 'uploadFile').mockImplementation(fn);
+
+      await fileService.editFile(fileId, fileDto, fileBuffer);
+
+      expect((fileService as any).findFile).toHaveBeenCalledWith(fileId);
+      expect((fileService as any).uploadFile).toHaveBeenCalledWith(fileDto, fileBuffer);
+      expect(prismaService.file.update).toHaveBeenCalledWith({
+        where: { id: fileId },
+        data: fileDto,
+      });
     });
   });
 
@@ -83,37 +142,6 @@ describe('FileService', () => {
 
       const fileDeleted = await fileService.deleteFile(file.id);
       expect(fileDeleted).toEqual(file);
-    });
-  });
-
-  describe('uploadFile()', () => {
-    it('should throw an error when trying to upload duplicate file', async () => {
-      const file = {} as File;
-      const fileDto = {} as Prisma.FileCreateInput;
-      const fileBuffer = {} as Buffer;
-      const filePath = '/test/file/service/upload-file.txt';
-
-      spyOn(fileService as any, 'findDuplicateFile').mockResolvedValue(file);
-      spyOn(fileService as any, 'getUploadFilePath').mockImplementation(() => filePath);
-      spyOn(fsExtra, 'ensureFile').mockImplementation(() => Promise.resolve());
-      spyOn(fsExtra, 'writeFile').mockImplementation(() => Promise.resolve());
-
-      await expect(fileService.uploadFile(fileDto, fileBuffer)).rejects.toThrow(
-        DuplicateFileException,
-      );
-    });
-
-    it('should upload file', async () => {
-      const fileDto = {} as Prisma.FileCreateInput;
-      const fileBuffer = {} as Buffer;
-      const filePath = '/test/file/service/upload-file.txt';
-
-      spyOn(fileService as any, 'findDuplicateFile').mockResolvedValue(null);
-      spyOn(fileService as any, 'getUploadFilePath').mockImplementation(() => filePath);
-      spyOn(fsExtra, 'ensureFile').mockImplementation(() => Promise.resolve());
-      spyOn(fsExtra, 'writeFile').mockImplementation(() => Promise.resolve());
-
-      expect(await fileService.uploadFile(fileDto, fileBuffer)).toBeUndefined();
     });
   });
 
@@ -139,6 +167,24 @@ describe('FileService', () => {
       const uploadFilePath = fileService.getUploadFilePath(fileDto);
 
       expect(uploadFilePath).toEqual(join(mediaPath, fileDto.fileDestination, fileDto.fileName));
+    });
+  });
+
+  describe('uploadFile()', () => {
+    it('should upload file', async () => {
+      const fileDto = {} as Prisma.FileCreateInput;
+      const fileBuffer = {} as Buffer;
+      const filePath = '/test/file/service/upload-file.txt';
+
+      spyOn(fileService as any, 'getUploadFilePath').mockImplementation(() => filePath);
+      spyOn(fsExtra, 'ensureFile').mockImplementation(fn);
+      spyOn(fsExtra, 'writeFile').mockImplementation(fn);
+
+      await (fileService as any).uploadFile(fileDto, fileBuffer);
+
+      expect((fileService as any).getUploadFilePath).toBeCalledWith(fileDto);
+      expect(fsExtra.ensureFile).toHaveBeenCalledWith(filePath);
+      expect(fsExtra.writeFile).toHaveBeenCalledWith(filePath, fileBuffer);
     });
   });
 
@@ -178,6 +224,42 @@ describe('FileService', () => {
       spyOn(prismaService.file, 'findFirst').mockResolvedValue(file);
 
       expect(await (fileService as any).findDuplicateFile(fileDto)).toEqual(file);
+    });
+  });
+
+  describe('willOverrideFile()', () => {
+    it('should return false if file name is empty', async () => {
+      const file = { fileName: '' } as File;
+      const fileDto = { fileName: '' } as FileUpdateDto;
+
+      expect(await (fileService as any).willOverrideFile(file, fileDto)).toBeFalsy();
+    });
+
+    it('should return false if file destination is empty', async () => {
+      const file = { fileDestination: '' } as File;
+      const fileDto = { fileDestination: '' } as FileUpdateDto;
+
+      expect(await (fileService as any).willOverrideFile(file, fileDto)).toBeFalsy();
+    });
+
+    it('should return false if file to override is not found', async () => {
+      const file = { fileName: 'a.txt', fileDestination: 'a' } as File;
+      const fileDto = { fileName: 'b.txt', fileDestination: 'b' } as FileUpdateDto;
+      const fileToOverride = null;
+
+      spyOn(prismaService.file, 'findFirst').mockResolvedValue(fileToOverride);
+
+      expect(await (fileService as any).willOverrideFile(file, fileDto)).toBeFalsy();
+    });
+
+    it('should return true if file to override is found', async () => {
+      const file = { fileName: 'a.txt', fileDestination: 'a' } as File;
+      const fileDto = { fileName: 'b.txt', fileDestination: 'b' } as FileUpdateDto;
+      const fileToOverride = { fileName: 'b.txt', fileDestination: 'b' } as File;
+
+      spyOn(prismaService.file, 'findFirst').mockResolvedValue(fileToOverride);
+
+      expect(await (fileService as any).willOverrideFile(file, fileDto)).toBeTruthy();
     });
   });
 });

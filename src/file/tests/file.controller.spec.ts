@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { File, Prisma } from '@prisma/client';
 import { FileController } from '../file.controller';
-import { DeleteFileException } from '../file.exception';
 import { FileService } from '../file.service';
 
 const { spyOn, fn } = jest;
 
 class MockFileService {
   createFile = fn();
+  editFile = fn();
   deleteFile = fn();
   uploadFile = fn();
   getUploadFilePath = fn();
@@ -29,33 +29,29 @@ describe('FileController', () => {
 
   describe('createFile()', () => {
     it('should upload and create file', async () => {
-      spyOn(fileService, 'uploadFile');
       spyOn(fileService, 'createFile');
 
       const fileDto = {} as Prisma.FileCreateInput;
       const fileMulter = { buffer: {} as Buffer } as Express.Multer.File;
       await fileController.createFile(fileDto, fileMulter);
 
-      expect(fileService.uploadFile).toHaveBeenCalledWith(fileDto, fileMulter.buffer);
-      expect(fileService.createFile).toHaveBeenCalledWith(fileDto);
+      expect(fileService.createFile).toHaveBeenCalledWith(fileDto, fileMulter.buffer);
+    });
+  });
+
+  describe('editFile()', () => {
+    it('should edit file', async () => {
+      const fileId = 1;
+      const fileDto = {} as Prisma.FileCreateInput;
+      const fileMulter = { buffer: {} as Buffer } as Express.Multer.File;
+
+      await fileController.editFile(fileId.toString(), fileDto, fileMulter);
+
+      expect(fileService.editFile).toHaveBeenCalledWith(fileId, fileDto, fileMulter.buffer);
     });
   });
 
   describe('deleteFile()', () => {
-    it('should throw an error when trying to delete file that does not exists', async () => {
-      spyOn(fileService, 'deleteFile').mockImplementation(
-        () =>
-          new Promise(() => {
-            throw new DeleteFileException();
-          }),
-      );
-
-      const fileId = -1;
-      await expect(fileController.deleteFile(fileId.toString())).rejects.toThrow(
-        DeleteFileException,
-      );
-    });
-
     it('should delete file', async () => {
       const file = { id: 1 } as File;
       spyOn(fileService, 'deleteFile').mockResolvedValue(file);
