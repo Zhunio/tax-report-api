@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import * as request from 'supertest';
 import { PrismaService } from '../../prisma/prisma.service';
 import { FileModule } from '../file.module';
+import { FileUpdateDto } from '../models/file.model';
 
 describe('FileController (e2e)', () => {
   let app: INestApplication;
@@ -68,6 +69,76 @@ describe('FileController (e2e)', () => {
       expect(body.id).toEqual(expect.any(Number));
       expect(body.fileName).toBe(fileDto.fileName);
       expect(body.fileDestination).toBe(fileDto.fileDestination);
+    });
+  });
+
+  describe('editFile()', () => {
+    it('should throw an error when trying to edit file that does not exists', async () => {
+      const fileId = -1;
+      const fileDto: FileUpdateDto = {
+        fileName: 'edit-file.txt',
+        fileDestination: '/test/file/e2e',
+      };
+
+      const { statusCode } = await req
+        .patch(`/file/${fileId}`)
+        .field('fileName', fileDto.fileName)
+        .field('fileDestination', fileDto.fileDestination)
+        .attach('file', './src/file/tests/something.txt');
+
+      expect(statusCode).toEqual(HttpStatus.INTERNAL_SERVER_ERROR);
+    });
+
+    it('should throw an error when trying to override file', async () => {
+      const [fileDto1, fileDto2] = [
+        { fileName: 'edit-file-1.txt', fileDestination: '/test/file/service' },
+        { fileName: 'edit-file-2.txt', fileDestination: '/test/file/service' },
+      ];
+
+      const file1 = await req
+        .post('/file')
+        .field('fileName', fileDto1.fileName)
+        .field('fileDestination', fileDto1.fileDestination)
+        .attach('file', './src/file/tests/something.txt');
+
+      await req
+        .post('/file')
+        .field('fileName', fileDto2.fileName)
+        .field('fileDestination', fileDto2.fileDestination)
+        .attach('file', './src/file/tests/something.txt');
+
+      const { statusCode } = await req
+        .patch(`/file/${file1.body.id}`)
+        .field('fileName', fileDto2.fileName)
+        .field('fileDestination', fileDto2.fileDestination)
+        .attach('file', './src/file/tests/something.txt');
+
+      expect(statusCode).toEqual(HttpStatus.INTERNAL_SERVER_ERROR);
+    });
+
+    it('should edit file', async () => {
+      const fileDto: Prisma.FileCreateInput = {
+        fileName: 'edit-file.txt',
+        fileDestination: '/test/file/e2e',
+      };
+      const fileUpdateDto: FileUpdateDto = {
+        fileName: 'edit-file-1.txt',
+        fileDestination: '/test/file/e2e',
+      };
+
+      const file = await req
+        .post('/file')
+        .field('fileName', fileDto.fileName)
+        .field('fileDestination', fileDto.fileDestination)
+        .attach('file', './src/file/tests/something.txt');
+
+      const { statusCode } = await req
+        .patch(`/file/${file.body.id}`)
+        .field('fileName', fileUpdateDto.fileName)
+        .field('fileDestination', fileUpdateDto.fileDestination)
+        .attach('file', './src/file/tests/something.txt');
+
+      expect(statusCode).toEqual(HttpStatus.OK);
     });
   });
 

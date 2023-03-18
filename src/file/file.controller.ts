@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Param,
+  Patch,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -10,6 +11,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File, Prisma } from '@prisma/client';
 import { FileService } from './file.service';
+import { FileUpdateDto } from './models/file.model';
 
 @Controller('file')
 export class FileController {
@@ -17,12 +19,25 @@ export class FileController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  async createFile(
+  createFile(
     @Body() fileDto: Prisma.FileCreateInput,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<File> {
-    await this.fileService.uploadFile(fileDto, file.buffer);
-    return this.fileService.createFile(fileDto);
+    return this.fileService.createFile(fileDto, file.buffer);
+  }
+
+  @Patch(':id')
+  @UseInterceptors(FileInterceptor('file'))
+  editFile(
+    @Param('id') fileId: string,
+    @Body() fileDto: FileUpdateDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.fileService.editFile(
+      parseInt(fileId, 10),
+      fileDto,
+      file.buffer,
+    );
   }
 
   @Delete(':id')
