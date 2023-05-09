@@ -4,11 +4,20 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("PG_DATABASE_URL")
+  url      = env("TRA_DATABASE_URL")
 }
 
 model TaxReport {
   id Int @default(autoincrement()) @id
   fiscalQuarter Int
   fiscalYear Int
+  file File? @relation(fields: [fileId], references: [id])
+  fileId Int? @unique
+}
+
+model File {
+  id Int @default(autoincrement()) @id
+  fileName String
+  fileDestination String
+  taxReport TaxReport?
 }
