@@ -8,5 +8,6 @@ import { FileService } from './file.service';
   imports: [EnvModule, PrismaModule],
   controllers: [FileController],
   providers: [FileService],
+  exports: [FileService],
 })
 export class FileModule {}

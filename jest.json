@@ -5,5 +5,8 @@
   "testRegex": ".spec-?(int|e2e)?.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "^@/(.*)$": "<rootDir>/src/$1"
   }
 }
