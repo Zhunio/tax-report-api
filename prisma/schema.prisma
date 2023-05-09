@@ -11,10 +11,13 @@ model TaxReport {
   id Int @default(autoincrement()) @id
   fiscalQuarter Int
   fiscalYear Int
+  file File? @relation(fields: [fileId], references: [id])
+  fileId Int? @unique
 }
 
 model File {
   id Int @default(autoincrement()) @id
   fileName String
   fileDestination String
+  taxReport TaxReport?
 }
