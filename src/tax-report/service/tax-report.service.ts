@@ -12,6 +12,14 @@ export class TaxReportService {
     private readonly fileService: FileService,
   ) {}
 
+  async getTaxReports() {
+    return this.prisma.taxReport.findMany({
+      include: {
+        file: true,
+      },
+    });
+  }
+
   async createTaxReport(taxReportCreate: TaxReportCreate, fileBuffer: Buffer) {
     const { fileName, fileDestination } = taxReportCreate;
     const fiscalQuarter = parseInt(taxReportCreate.fiscalQuarter);
@@ -49,11 +57,15 @@ export class TaxReportService {
   }
 
   async deleteTaxReport(taxReportId: number): Promise<TaxReport> {
-    return this.prisma.taxReport.delete({
+    const taxReport = await this.prisma.taxReport.delete({
       where: { id: taxReportId },
       include: {
         file: true,
       },
     });
+
+    await this.fileService.deleteFile(taxReport.fileId);
+
+    return taxReport;
   }
 }

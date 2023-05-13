@@ -4,6 +4,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Post,
   UploadedFile,
@@ -15,6 +16,11 @@ import { TaxReport } from '@prisma/client';
 @Controller('tax-report')
 export class TaxReportController {
   constructor(private readonly taxReportService: TaxReportService) {}
+
+  @Get()
+  async getTaxReports() {
+    return this.taxReportService.getTaxReports();
+  }
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
