@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { File, Prisma } from '@prisma/client';
 import { ensureFile, writeFile } from 'fs-extra';
+import { readFile } from 'fs/promises';
 import { format, join, parse } from 'path';
 import { EnvService } from '../env/env.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -8,6 +9,7 @@ import {
   DeleteFileException,
   DuplicateFileException,
   EditFileThatDoesNotExistException,
+  FileNotFoundException,
   OverrideFileException,
   UploadFileException,
 } from './file.exception';
@@ -19,6 +21,16 @@ export class FileService {
     private envService: EnvService,
     private prismaService: PrismaService,
   ) {}
+
+  async getFileBuffer(fileId: number) {
+    try {
+      const file = await this.findFile(fileId);
+      const uploadFilePath = this.getUploadFilePath(file);
+      return await readFile(uploadFilePath);
+    } catch (e) {
+      throw new FileNotFoundException();
+    }
+  }
 
   async createFile(
     fileDto: Prisma.FileCreateInput,
@@ -109,7 +121,7 @@ export class FileService {
     }
   }
 
-  private findFile(fileId: number): Promise<File | null> {
+  findFile(fileId: number): Promise<File | null> {
     return this.prismaService.file.findFirst({
       where: {
         id: fileId,
