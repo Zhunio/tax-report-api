@@ -36,7 +36,7 @@ export class ExcelService {
       { header: '', key: 'I' },
       { header: 'Pay Meth', key: 'paymentMethod' },
       { header: '', key: 'K' },
-      { header: 'Amount', key: 'total' },
+      { header: 'Amount', key: 'amount' },
     ];
   }
 
@@ -49,7 +49,7 @@ export class ExcelService {
     const number = row.getCell('paymentNumber').value as string;
     const name = row.getCell('customerName').value as string;
     const method = row.getCell('paymentMethod').value as string;
-    const total = row.getCell('total').value as number;
+    const amount = row.getCell('amount').value as number;
 
     if (isDate(date)) {
       const payment: Prisma.PaymentCreateWithoutTaxReportInput = {
@@ -58,7 +58,7 @@ export class ExcelService {
         number,
         name,
         method,
-        total: currency(total).toString(),
+        amount: currency(amount).toString(),
         isExempt: false,
       };
 

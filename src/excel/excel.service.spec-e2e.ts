@@ -3,6 +3,16 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { ExcelService } from './excel.service';
 
+const excelPaymentShape = expect.objectContaining({
+  type: expect.any(String),
+  date: expect.any(String),
+  number: expect.any(String),
+  name: expect.any(String),
+  method: expect.any(String),
+  amount: expect.any(String),
+  isExempt: expect.any(Boolean),
+});
+
 describe('ExcelService', () => {
   let service: ExcelService;
   let fileBuffer: Buffer;
@@ -18,19 +28,6 @@ describe('ExcelService', () => {
 
   it('should parse payments from excel file', async () => {
     const payments = await service.parsePayments(fileBuffer);
-
-    expect(payments).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          type: expect.any(String),
-          date: expect.any(String),
-          number: expect.any(String),
-          name: expect.any(String),
-          method: expect.any(String),
-          total: expect.any(String),
-          isExempt: expect.any(Boolean),
-        }),
-      ]),
-    );
+    expect(payments).toEqual(expect.arrayContaining([excelPaymentShape]));
   });
 });
