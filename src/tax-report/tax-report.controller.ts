@@ -21,6 +21,11 @@ import { TaxReport } from '@prisma/client';
 export class TaxReportController {
   constructor(private readonly taxReportService: TaxReportService) {}
 
+  @Get()
+  async getAllTaxReports() {
+    return this.taxReportService.getAllTaxReports();
+  }
+
   @Get(':taxReportId')
   async getTaxReportById(
     @Param('taxReportId') taxReportId: string,

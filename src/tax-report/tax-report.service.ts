@@ -21,6 +21,14 @@ export class TaxReportService {
     private readonly excelService: ExcelService,
   ) {}
 
+  async getAllTaxReports(): Promise<TaxReport[]> {
+    const taxReports = await this.prisma.taxReport.findMany({
+      include: { file: true, payments: true },
+    });
+
+    return taxReports;
+  }
+
   async getTaxReportById(taxReportId: number) {
     const taxReport = await this.prisma.taxReport.findFirst({
       where: { id: taxReportId },

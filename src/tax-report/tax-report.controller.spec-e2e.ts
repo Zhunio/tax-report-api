@@ -8,7 +8,7 @@ import {
   taxReportShape,
 } from '@/tax-report/tax-report-test.utils';
 import { TaxReportExceptionMessage } from '@/tax-report/tax-report.exception';
-import { TaxReportError } from '@/tax-report/tax-report.model';
+import { TaxReport, TaxReportError } from '@/tax-report/tax-report.model';
 import { getTaxReportFileDto } from '@/tax-report/tax-report.utils';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
@@ -29,6 +29,19 @@ describe('TaxController (e2e)', () => {
 
     await app.init();
     await prismaService.cleanDatabase();
+  });
+
+  describe('getAllTaxReports()', () => {
+    it('should get all tax reports', async () => {
+      await req.createTaxReport({ fiscalQuarter: '1', fiscalYear: '1999' });
+      const taxReports = await req.getAllTaxReports<TaxReport[]>();
+
+      for (const { file, payments, ...taxReport } of taxReports) {
+        expect(file).toEqual(fileShape());
+        expect(payments).toEqual(expect.arrayContaining([paymentShape()]));
+        expect(taxReport).toEqual(taxReportShape());
+      }
+    });
   });
 
   describe('getTaxReportById()', () => {

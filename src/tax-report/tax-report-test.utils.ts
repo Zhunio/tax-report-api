@@ -15,6 +15,11 @@ export class TaxReportReq {
     this.req = request(app.getHttpServer());
   }
 
+  async getAllTaxReports<T>() {
+    const { body } = await this.req.get('/tax-report');
+    return body as T;
+  }
+
   async getTaxReportById<T extends TaxReport | TaxReportError = TaxReport>(
     taxReportId: number,
   ) {
