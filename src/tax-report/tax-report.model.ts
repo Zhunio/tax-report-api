@@ -16,9 +16,7 @@ export interface TaxReportCreate {
 }
 
 export interface PaymentUpdateDto {
-  id: number;
-  amount: string;
-  isExempt: boolean;
+  isExempt?: boolean;
 }
 
 export interface TaxReportError {

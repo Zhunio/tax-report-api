@@ -40,13 +40,14 @@ export class TaxReportReq {
     return body as T;
   }
 
-  async bulkEditTaxReport<T extends TaxReport | TaxReportError = TaxReport>(
+  async editTaxReportPayment<T extends TaxReport | TaxReportError = TaxReport>(
     taxReportId: number,
-    paymentUpdates: PaymentUpdateDto[],
+    paymentId: number,
+    paymentUpdateDto: PaymentUpdateDto,
   ) {
     const { body } = await this.req
-      .patch(`/tax-report/${taxReportId}/bulk/payment`)
-      .send(paymentUpdates);
+      .patch(`/tax-report/${taxReportId}/payment/${paymentId}`)
+      .send(paymentUpdateDto);
     return body as T;
   }
 
@@ -86,8 +87,4 @@ export function taxReportShape(taxReport?: Partial<TaxReport>) {
     fiscalYear: taxReport?.fiscalYear ?? expect.any(Number),
     fileId: taxReport?.fileId ?? expect.any(Number),
   });
-}
-
-export function mapIsExemptToTrue(payment: Payment) {
-  return { ...payment, isExempt: true };
 }

@@ -48,14 +48,16 @@ export class TaxReportController {
     );
   }
 
-  @Patch(':taxReportId/bulk/payment')
-  async bulkEditTaxReportPayments(
+  @Patch(':taxReportId/payment/:paymentId')
+  async updateTaxReportPayment(
     @Param('taxReportId') taxReportId: string,
-    @Body() paymentUpdates: PaymentUpdateDto[],
+    @Param('paymentId') paymentId: string,
+    @Body() paymentUpdate: PaymentUpdateDto,
   ): Promise<TaxReport> {
-    return this.taxReportService.bulkEditTaxReportPayments(
+    return this.taxReportService.editTaxReportPayment(
       parseInt(taxReportId, 10),
-      paymentUpdates,
+      parseInt(paymentId, 10),
+      paymentUpdate,
     );
   }
 
