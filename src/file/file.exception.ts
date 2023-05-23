@@ -1,8 +1,14 @@
 import {
   HttpException,
   HttpExceptionOptions,
-  HttpStatus
+  HttpStatus,
 } from '@nestjs/common';
+
+export class FileNotFoundException extends HttpException {
+  constructor() {
+    super('File not found', HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
 
 export class DuplicateFileException extends HttpException {
   constructor() {
