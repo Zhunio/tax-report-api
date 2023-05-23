@@ -25,10 +25,9 @@
     "@prisma/client": "^4.8.1",
     "currency.js": "^2.0.4",
     "date-fns": "^2.30.0",
-    "exceljs": "^4.3.0",
     "fs-extra": "^11.1.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.2.0"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
