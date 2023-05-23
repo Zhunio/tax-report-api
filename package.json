@@ -11,7 +11,6 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --config jest.json --runInBand",
-    "test:watch": "jest --config jest.json --runInBand --watch",
     "test:unit": "jest",
     "test:int": "jest --config jest-int.json --runInBand",
     "test:e2e": "jest --config jest-e2e.json --runInBand"
@@ -23,9 +22,6 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^9.0.0",
     "@prisma/client": "^4.8.1",
-    "currency.js": "^2.0.4",
-    "date-fns": "^2.30.0",
-    "exceljs": "^4.3.0",
     "fs-extra": "^11.1.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"

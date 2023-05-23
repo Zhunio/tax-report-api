@@ -2,36 +2,20 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
   Param,
   Patch,
   Post,
-  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File, Prisma } from '@prisma/client';
-import { Response } from 'express';
 import { FileService } from './file.service';
 import { FileUpdateDto } from './models/file.model';
 
 @Controller('file')
 export class FileController {
   constructor(private fileService: FileService) {}
-
-  @Get('buffer/:id')
-  async getFileBuffer(@Param('id') fileId: string) {
-    return this.fileService.getFileBuffer(parseInt(fileId));
-  }
-
-  @Get('download/:id')
-  async downloadFile(@Param('id') fileId: string, @Res() res: Response) {
-    const file = await this.fileService.findFile(parseInt(fileId, 10));
-    const filePath = this.fileService.getUploadFilePath(file);
-
-    res.download(filePath, file.fileName);
-  }
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))

@@ -11,9 +11,8 @@ model TaxReport {
   id Int @default(autoincrement()) @id
   fiscalQuarter Int
   fiscalYear Int
-  file File? @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  file File? @relation(fields: [fileId], references: [id])
   fileId Int? @unique
-  payments Payment[]
 }
 
 model File {
@@ -21,17 +20,4 @@ model File {
   fileName String
   fileDestination String
   taxReport TaxReport?
-}
-
-model Payment {
-  id Int @default(autoincrement()) @id
-  type String
-  date String
-  number String
-  name String
-  method String
-  amount String
-  isExempt Boolean
-  taxReport TaxReport @relation(fields: [taxReportId], references: [id], onDelete: Cascade)
-  taxReportId Int
 }

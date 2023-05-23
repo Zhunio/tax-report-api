@@ -105,9 +105,6 @@ $ npx prisma migrate deploy
 # Generate Prisma client
 $ npx prisma generate
 
-# Prisma Studio
-$ npx prisma studio
-
 # start nest app
 $ npx nest start
 $ npx nest start --watch
