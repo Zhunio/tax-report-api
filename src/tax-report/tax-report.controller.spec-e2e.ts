@@ -3,7 +3,6 @@ import { PrismaService } from '@/prisma/prisma.service';
 import {
   TaxReportReq,
   fileShape,
-  mapIsExemptToTrue,
   paymentShape,
   taxReportShape,
 } from '@/tax-report/tax-report-test.utils';
@@ -76,13 +75,17 @@ describe('TaxController (e2e)', () => {
     });
   });
 
-  describe('bulkEditTaxReport()', () => {
+  describe('editTaxReportPayment()', () => {
     it('should edit payment', async () => {
       const { id, payments } = await req.createTaxReport({
         fiscalQuarter: '1',
         fiscalYear: '1997',
       });
-      await req.bulkEditTaxReport(id, payments.map(mapIsExemptToTrue));
+
+      for (const payment of payments) {
+        await req.editTaxReportPayment(id, payment.id, { isExempt: true });
+      }
+
       const { file, payments: paymentsUpdated, ...taxReport } = await req.getTaxReportById(id);
 
       expect(taxReport).toEqual(taxReportShape());

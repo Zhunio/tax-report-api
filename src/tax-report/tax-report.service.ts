@@ -64,13 +64,15 @@ export class TaxReportService {
     return taxReport;
   }
 
-  async bulkEditTaxReportPayments(
+  async editTaxReportPayment(
     taxReportId: number,
-    paymentUpdates: PaymentUpdateDto[],
+    paymentId: number,
+    paymentUpdate: PaymentUpdateDto,
   ): Promise<TaxReport> {
-    for (const { id, ...data } of paymentUpdates) {
-      await this.prisma.payment.update({ where: { id }, data });
-    }
+    await this.prisma.payment.update({
+      where: { id: paymentId },
+      data: paymentUpdate,
+    });
 
     const taxReport = await this.prisma.taxReport.findFirst({
       where: { id: taxReportId },
