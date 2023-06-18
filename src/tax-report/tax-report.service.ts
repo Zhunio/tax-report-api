@@ -89,6 +89,11 @@ export class TaxReportService {
         include: { file: true, payments: true },
       });
 
+      const file = await this.fileService.getFileById(taxReport.fileId);
+      if (file) {
+        await this.fileService.deleteFile(taxReport.fileId);
+      }
+
       return taxReport;
     } catch (error) {
       throw new CouldNotDeleteTaxReportException();
