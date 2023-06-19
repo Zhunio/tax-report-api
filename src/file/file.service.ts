@@ -22,6 +22,15 @@ export class FileService {
     private prismaService: PrismaService,
   ) {}
 
+  async getFileById(fileId: number) {
+    try {
+      const file = await this.findFile(fileId);
+      return file;
+    } catch (e) {
+      throw new FileNotFoundException();
+    }
+  }
+
   async getFileBuffer(fileId: number) {
     try {
       const file = await this.findFile(fileId);

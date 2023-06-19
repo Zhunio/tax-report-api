@@ -20,6 +20,11 @@ import { FileUpdateDto } from './models/file.model';
 export class FileController {
   constructor(private fileService: FileService) {}
 
+  @Get(':id')
+  async getFileById(@Param('id') fileId: string) {
+    return this.fileService.getFileById(parseInt(fileId, 10));
+  }
+
   @Get('buffer/:id')
   async getFileBuffer(@Param('id') fileId: string) {
     return this.fileService.getFileBuffer(parseInt(fileId));

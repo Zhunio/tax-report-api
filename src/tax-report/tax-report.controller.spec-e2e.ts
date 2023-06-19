@@ -1,4 +1,5 @@
 import { AppModule } from '@/app/app.module';
+import { FileRequest } from '@/file/file-request';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
   TaxReportReq,
@@ -14,6 +15,7 @@ import { Test } from '@nestjs/testing';
 
 describe('TaxController (e2e)', () => {
   let req: TaxReportReq;
+  let fileReq: FileRequest;
   let app: INestApplication;
   let prismaService: PrismaService;
 
@@ -25,6 +27,7 @@ describe('TaxController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     prismaService = app.get(PrismaService);
     req = new TaxReportReq(app);
+    fileReq = new FileRequest(app);
 
     await app.init();
     await prismaService.cleanDatabase();
@@ -98,9 +101,12 @@ describe('TaxController (e2e)', () => {
     it('should delete tax report', async () => {
       const taxReport = await req.createTaxReport({ fiscalQuarter: '1', fiscalYear: '1998' });
       const taxReportDeleted = await req.deleteTaxReport(taxReport.id);
+      const taxReportFileDeleted = await fileReq.getFileById(taxReport.fileId);
+
       const taxReportFound = await req.getTaxReportById(taxReport.id);
 
       expect(taxReport).toEqual(taxReportShape(taxReportDeleted));
+      expect(taxReportFileDeleted).toEqual({});
       expect(taxReportFound).toEqual({});
     });
 
