@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  postgres:
+  postgres-dev:
     image: postgres:15.1-alpine
     restart: always
     environment:
@@ -9,9 +9,4 @@ services:
       POSTGRES_USER: ${TRA_POSTGRES_USER}
       POSTGRES_PASSWORD: ${TRA_POSTGRES_PASSWORD}
     ports:
-      - 5432:5432
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
+      - ${TRA_POSTGRES_PORT}:5432
