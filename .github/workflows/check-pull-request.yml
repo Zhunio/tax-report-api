@@ -42,3 +42,5 @@ jobs:
         run: npm run prisma:migrate:test
       - name: Run tests
         run: npm run test
+      - name: Shutdown Postgres container
+        run: npm run docker:down:test
