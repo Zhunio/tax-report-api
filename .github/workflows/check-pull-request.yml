@@ -14,8 +14,9 @@ env:
   TRA_POSTGRES_DB: ${{ vars.TRA_POSTGRES_DB }}
   TRA_POSTGRES_USER: ${{ vars.TRA_POSTGRES_USER }}
   TRA_POSTGRES_PASSWORD: ${{ vars.TRA_POSTGRES_PASSWORD }}
-  TRA_DATABASE_URL: ${{ vars.TRA_DATABASE_URL }}
-  TRA_MEDIA_PATH: ${ HOME }/tax-report-documents
+  TRA_POSTGRES_PORT: ${{ vars.TRA_POSTGRES_PORT }}
+  TRA_DATABASE_URL: postgresql://${{ vars.TRA_POSTGRES_USER }}:${{ vars.TRA_POSTGRES_PASSWORD }}@localhost:${{ vars.TRA_POSTGRES_PORT }}/${{ vars.TRA_POSTGRES_DB }}?schema=public
+  TRA_MEDIA_PATH: ${ HOME }/tax-report-media
 
 jobs:
   check-pull-request:
