@@ -1,12 +1,11 @@
 version: '3.8'
 
 services:
-  postgres-dev:
-    image: postgres:15.1-alpine
+  tax-report-dev-db:
+    image: mysql:8.1-oracle
     restart: always
     environment:
-      POSTGRES_DB: ${TRA_POSTGRES_DB}
-      POSTGRES_USER: ${TRA_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${TRA_POSTGRES_PASSWORD}
+      MYSQL_DATABASE: ${TAX_REPORT_DATABASE_NAME}
+      MYSQL_ROOT_PASSWORD: ${TAX_REPORT_PASSWORD}
     ports:
-      - ${TRA_POSTGRES_PORT}:5432
+      - ${TAX_REPORT_PORT}:3306

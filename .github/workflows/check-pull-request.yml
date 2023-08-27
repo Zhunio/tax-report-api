@@ -11,12 +11,12 @@ on:
       - 'develop'
 
 env:
-  TRA_POSTGRES_DB: ${{ vars.TRA_POSTGRES_DB }}
-  TRA_POSTGRES_USER: ${{ vars.TRA_POSTGRES_USER }}
-  TRA_POSTGRES_PASSWORD: ${{ vars.TRA_POSTGRES_PASSWORD }}
-  TRA_POSTGRES_PORT: ${{ vars.TRA_POSTGRES_PORT }}
-  TRA_DATABASE_URL: postgresql://${{ vars.TRA_POSTGRES_USER }}:${{ vars.TRA_POSTGRES_PASSWORD }}@localhost:${{ vars.TRA_POSTGRES_PORT }}/${{ vars.TRA_POSTGRES_DB }}?schema=public
-  TRA_MEDIA_PATH: ${ HOME }/tax-report-media
+  TAX_REPORT_USER: ${{ vars.TAX_REPORT_USER }}
+  TAX_REPORT_PASSWORD: ${{ vars.TAX_REPORT_PASSWORD }}
+  TAX_REPORT_PORT: ${{ vars.TAX_REPORT_PORT }}
+  TAX_REPORT_DATABASE_NAME: ${{ vars.TAX_REPORT_DATABASE_NAME }}
+  TAX_REPORT_DATABASE_URL: mysql://${{ vars.TAX_REPORT_USER }}:${{ vars.TAX_REPORT_PASSWORD }}@localhost:${{ vars.TAX_REPORT_PORT }}/${{ vars.TAX_REPORT_DATABASE_NAME }}
+  TAX_REPORT_MEDIA_PATH: ${ HOME }/tax-report-media
 
 jobs:
   check-pull-request:
