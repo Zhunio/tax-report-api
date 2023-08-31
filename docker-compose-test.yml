@@ -6,6 +6,6 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: ${TAX_REPORT_DATABASE_NAME}
-      MYSQL_ROOT_PASSWORD: ${TAX_REPORT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${TAX_REPORT_DATABASE_PASSWORD}
     ports:
-      - ${TAX_REPORT_PORT}:3306
+      - ${TAX_REPORT_DATABASE_PORT}:3306
