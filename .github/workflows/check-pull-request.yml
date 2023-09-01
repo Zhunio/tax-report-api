@@ -10,14 +10,6 @@ on:
       - 'main'
       - 'develop'
 
-env:
-  TAX_REPORT_DATABASE_USER: ${{ vars.TAX_REPORT_DATABASE_USER }}
-  TAX_REPORT_DATABASE_PASSWORD: ${{ vars.TAX_REPORT_DATABASE_PASSWORD }}
-  TAX_REPORT_DATABASE_PORT: ${{ vars.TAX_REPORT_DATABASE_PORT }}
-  TAX_REPORT_DATABASE_NAME: ${{ vars.TAX_REPORT_DATABASE_NAME }}
-  TAX_REPORT_DATABASE_URL: mysql://${{ vars.TAX_REPORT_DATABASE_USER }}:${{ vars.TAX_REPORT_DATABASE_PASSWORD }}@localhost:${{ vars.TAX_REPORT_DATABASE_PORT }}/${{ vars.TAX_REPORT_DATABASE_NAME }}
-  TAX_REPORT_MEDIA_PATH: ${ HOME }/tax-report-media
-
 jobs:
   check-pull-request:
     runs-on: ubuntu-latest
