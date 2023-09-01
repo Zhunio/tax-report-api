@@ -36,11 +36,13 @@ jobs:
         run: npm run format
       - name: Run linter
         run: npm run lint
-      - name: Start Postgres container
+      - name: Start database
         run: npm run docker:up:test
-      - name: Apply migrations to Postgres database
-        run: npm run prisma:migrate:test
+      - name: Wait for database to be ready
+        run: sleep 20
+      - name: Apply migrations to database
+        run: npm run migration:deploy:test
       - name: Run tests
         run: npm run test
-      - name: Shutdown Postgres container
+      - name: Shutdown database
         run: npm run docker:down:test
