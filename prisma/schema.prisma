@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("TRA_DATABASE_URL")
+  provider = "mysql"
+  url      = env("TAX_REPORT_DATABASE_URL")
 }
 
 model TaxReport {

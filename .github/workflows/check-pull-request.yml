@@ -10,14 +10,6 @@ on:
       - 'main'
       - 'develop'
 
-env:
-  TRA_POSTGRES_DB: ${{ vars.TRA_POSTGRES_DB }}
-  TRA_POSTGRES_USER: ${{ vars.TRA_POSTGRES_USER }}
-  TRA_POSTGRES_PASSWORD: ${{ vars.TRA_POSTGRES_PASSWORD }}
-  TRA_POSTGRES_PORT: ${{ vars.TRA_POSTGRES_PORT }}
-  TRA_DATABASE_URL: postgresql://${{ vars.TRA_POSTGRES_USER }}:${{ vars.TRA_POSTGRES_PASSWORD }}@localhost:${{ vars.TRA_POSTGRES_PORT }}/${{ vars.TRA_POSTGRES_DB }}?schema=public
-  TRA_MEDIA_PATH: ${ HOME }/tax-report-media
-
 jobs:
   check-pull-request:
     runs-on: ubuntu-latest
@@ -36,11 +28,13 @@ jobs:
         run: npm run format
       - name: Run linter
         run: npm run lint
-      - name: Start Postgres container
+      - name: Start database
         run: npm run docker:up:test
-      - name: Apply migrations to Postgres database
-        run: npm run prisma:migrate:test
+      - name: Wait for database to be ready
+        run: sleep 20
+      - name: Apply migrations to database
+        run: npm run migration:deploy:test
       - name: Run tests
         run: npm run test
-      - name: Shutdown Postgres container
+      - name: Shutdown database
         run: npm run docker:down:test
