@@ -19,46 +19,6 @@ Install dependencies.
 $ npm install
 ```
 
-## Environment Variables
-
-The following environmental variables are required for the app.
-
-```bash
-# .env.dev
-# Environment variables for dev environment
-TAX_REPORT_USER=root
-TAX_REPORT_PASSWORD=123-dev
-TAX_REPORT_PORT=3307
-TAX_REPORT_DATABASE_NAME=tax-report-dev
-TAX_REPORT_DATABASE_URL=mysql://${TAX_REPORT_USER}:${TAX_REPORT_PASSWORD}@localhost:${TAX_REPORT_PORT}/${TAX_REPORT_DATABASE_NAME}
-
-TAX_REPORT_MEDIA_PATH=${HOME}/tax-report-media/dev
-```
-
-```bash
-# .env.test
-# Environment variables for test environment
-TAX_REPORT_USER=root
-TAX_REPORT_PASSWORD=123-test
-TAX_REPORT_PORT=3308
-TAX_REPORT_DATABASE_NAME=tax-report-test
-TAX_REPORT_DATABASE_URL=mysql://${TAX_REPORT_USER}:${TAX_REPORT_PASSWORD}@localhost:${TAX_REPORT_PORT}/${TAX_REPORT_DATABASE_NAME}
-
-TAX_REPORT_MEDIA_PATH=${HOME}/tax-report-media/test
-```
-
-```bash
-# Environment variables for dev environment
-TAX_REPORT_USER=
-TAX_REPORT_PASSWORD=
-TAX_REPORT_PORT=3306
-TAX_REPORT_DATABASE_NAME=
-TAX_REPORT_HOSTNAME=
-TAX_REPORT_DATABASE_URL=mysql://${TAX_REPORT_USER}:${TAX_REPORT_PASSWORD}@${TAX_REPORT_HOSTNAME}:${TAX_REPORT_PORT}/${TAX_REPORT_DATABASE_NAME}
-
-TAX_REPORT_MEDIA_PATH=${HOME}/tax-report-media
-```
-
 ## Database
 
 Spin up dev/test databases
