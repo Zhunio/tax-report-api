@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  tax-report-test-db:
+    image: mysql:8.1-oracle
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${TAX_REPORT_DATABASE_NAME}
+      MYSQL_ROOT_PASSWORD: ${TAX_REPORT_DATABASE_PASSWORD}
+    ports:
+      - ${TAX_REPORT_DATABASE_PORT}:3306

@@ -1,21 +1,11 @@
 name: Check Pull Request
 
 on:
-  push:
-    branches:
-      - 'main'
-      - 'develop'
   pull_request:
     branches:
       - 'main'
       - 'develop'
-
-env:
-  TRA_POSTGRES_DB: ${{ vars.TRA_POSTGRES_DB }}
-  TRA_POSTGRES_USER: ${{ vars.TRA_POSTGRES_USER }}
-  TRA_POSTGRES_PASSWORD: ${{ vars.TRA_POSTGRES_PASSWORD }}
-  TRA_DATABASE_URL: ${{ vars.TRA_DATABASE_URL }}
-  TRA_MEDIA_PATH: ${ HOME }/tax-report-documents
+  workflow_dispatch:
 
 jobs:
   check-pull-request:
@@ -35,9 +25,13 @@ jobs:
         run: npm run format
       - name: Run linter
         run: npm run lint
-      - name: Start Postgres container
-        run: docker-compose up -d
-      - name: Apply migrations to Postgres database
-        run: npx prisma migrate deploy
+      - name: Start database
+        run: npm run docker:up:test
+      - name: Wait for database to be ready
+        run: sleep 20
+      - name: Apply migrations to database
+        run: npm run migration:deploy:test
       - name: Run tests
         run: npm run test
+      - name: Shutdown database
+        run: npm run docker:down:test
