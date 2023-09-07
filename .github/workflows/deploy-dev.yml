@@ -2,11 +2,21 @@ name: Deploy / Development
 
 on:
   push:
+    branches:
+      - develop
+  pull_request:
+    branches: 
+      - develop
 
 jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/build.yml
+
   deploy-dev:
-    runs-on: ubuntu-latest
     name: Deploy / Development
+    needs: build
+    runs-on: ubuntu-latest
     environment: Development
     steps:
       - name: Checkout repo
@@ -19,7 +29,7 @@ jobs:
           username: ${{ secrets.TAX_REPORT_SSH_USERNAME }}
           password: ${{ secrets.TAX_REPORT_SSH_PASSWORD }}
           port: ${{ secrets.TAX_REPORT_SSH_PORT }}
-          source: "."
+          source: ".,!.github"
           target: ${{ secrets.TAX_REPORT_DEPLOY_DIRECTORY }}
           rm: true # Remove target folder before upload data
       
