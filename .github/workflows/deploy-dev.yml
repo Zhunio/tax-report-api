@@ -1,21 +1,19 @@
-name: Deploy / Dev
+name: Deploy / Development
 
 on:
-  workflow_run:
-    workflows: [Build]
-    types: [completed]
-    branches: [develop]
+  push:
 
 jobs:
   deploy-dev:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    environment: dev
+    name: Deploy / Development
+    environment: Development
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-      - name: Deploy artifact
-        uses: appleboy/scp-action@v0.1.4
+
+      - name: Transfer files to server
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.TAX_REPORT_HOSTNAME }}
           username: ${{ secrets.TAX_REPORT_SSH_USERNAME }}
@@ -25,14 +23,31 @@ jobs:
           target: ${{ secrets.TAX_REPORT_DEPLOY_DIRECTORY }}
           rm: true # Remove target folder before upload data
       
-      - name: Deploy
+      - name: SSH to server & Deploy app
         uses: appleboy/ssh-action@v1.0.0
+        env:
+          TAX_REPORT_DEPLOY_DIRECTORY: ${{ secrets.TAX_REPORT_DEPLOY_DIRECTORY }}
         with:
           host: ${{ secrets.TAX_REPORT_HOSTNAME }}
           username: ${{ secrets.TAX_REPORT_SSH_USERNAME }}
           password: ${{ secrets.TAX_REPORT_SSH_PASSWORD }}
           port: ${{ secrets.TAX_REPORT_SSH_PORT }}
+          envs: TAX_REPORT_DEPLOY_DIRECTORY
           script: |
-            npm i
+            echo "***DEPLOYER***: Change to deploy directory..."
+            cd $TAX_REPORT_DEPLOY_DIRECTORY
+            
+            echo '***DEPLOYER*** Install dependencies'
+            npm install
+
+            echo '***DEPLOYER*** Build code'
             npm run build
-            pm2 start dist/main.js
+
+            echo '***DEPLOYER*** Apply migrations to database'
+            npm run migration:deploy:prod
+
+            echo "***DEPLOYER*** Delete running app"
+            pm2 delete main
+
+            echo '***DEPLOYER*** Running app'
+            pm2 start dist/main.js --name main
