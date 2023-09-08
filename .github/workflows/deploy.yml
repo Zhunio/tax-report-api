@@ -1,13 +1,16 @@
-name: Deploy / Development
-
 on:
-  push:
+  workflow_call:
+    inputs:
+      environment:
+        description: "The environment to deploy"
+        type: string
+        required: true
 
 jobs:
-  deploy-dev:
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
-    name: Deploy / Development
-    environment: Development
+    environment: ${{ inputs.environment }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -19,7 +22,7 @@ jobs:
           username: ${{ secrets.TAX_REPORT_SSH_USERNAME }}
           password: ${{ secrets.TAX_REPORT_SSH_PASSWORD }}
           port: ${{ secrets.TAX_REPORT_SSH_PORT }}
-          source: "."
+          source: ".,!.github"
           target: ${{ secrets.TAX_REPORT_DEPLOY_DIRECTORY }}
           rm: true # Remove target folder before upload data
       
