@@ -1,0 +1,38 @@
+name: Deploy CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches: 
+      - main
+      - develop
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/build.yml
+
+  deploy-dev:
+    name: Development
+    needs: build
+    if: |
+      github.ref == 'refs/heads/main' || 
+      github.ref == 'refs/heads/develop' ||
+      github.base_ref == 'main' ||
+      github.base_ref == 'develop'
+    secrets: inherit
+    with:
+      environment: Development
+    uses: ./.github/workflows/deploy.yml
+
+  deploy-prod:
+    name: Production
+    needs: deploy-dev
+    if: github.ref == 'refs/heads/main'
+    secrets: inherit
+    with:
+      environment: Production
+    uses: ./.github/workflows/deploy.yml
