@@ -35,3 +35,9 @@ model Payment {
   taxReport TaxReport @relation(fields: [taxReportId], references: [id], onDelete: Cascade)
   taxReportId Int
 }
+
+model User {
+  id Int @default(autoincrement()) @id
+  username String
+  password String
+}
