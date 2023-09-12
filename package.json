@@ -15,6 +15,8 @@
     "migration:deploy:dev": "dotenv -e .env.dev -- prisma migrate deploy",
     "migration:deploy:test": "dotenv -e .env.test -- prisma migrate deploy",
     "migration:deploy:prod": "prisma migrate deploy",
+    "migration:reset:dev": "dotenv -e .env.dev -- prisma migrate reset",
+    "migration:reset:test": "dotenv -e .env.test -- prisma migrate reset",
     "studio:dev": "dotenv -e .env.dev -- prisma studio",
     "studio:test": "dotenv -e .env.test -- prisma studio",
     "start:dev": "dotenv -e .env.dev -- nest start --watch",
