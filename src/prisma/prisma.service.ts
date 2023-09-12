@@ -19,7 +19,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
     const tablenames = await this.$queryRaw<
       Array<{ TABLE_NAME: string }>
-    >`SELECT TABLE_NAME from information_schema.TABLES WHERE TABLE_SCHEMA = 'tests';`;
+    >`SELECT TABLE_NAME from information_schema.TABLES WHERE TABLE_SCHEMA = 'tax-report-test';`;
 
     for (const { TABLE_NAME } of tablenames) {
       if (TABLE_NAME !== '_prisma_migrations') {
