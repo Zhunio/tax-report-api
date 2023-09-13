@@ -34,7 +34,7 @@ describe('UserService', () => {
       try {
         await service.createUser({ username: 'john', password: 'abcde' });
       } catch (error) {
-        expect(error.message).toEqual(UserExceptionMessage.DuplicateTaxReport);
+        expect(error.message).toEqual(UserExceptionMessage.DuplicateUser);
       }
     });
   });

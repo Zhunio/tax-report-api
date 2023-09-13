@@ -23,9 +23,13 @@ export class UserService {
   }
 
   async findUserByUsernameAndPassword(userDto: UserDto): Promise<User> {
-    const { password, ...userFields } = await this.prismaService.user.findFirst(
-      { where: userDto },
-    );
+    const user = await this.prismaService.user.findFirst({ where: userDto });
+
+    if (!user) {
+      return null;
+    }
+
+    const { password, ...userFields } = user;
 
     return userFields;
   }

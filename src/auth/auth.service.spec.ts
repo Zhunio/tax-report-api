@@ -1,6 +1,8 @@
 import { PrismaModule } from '@/prisma/prisma.module';
 import { PrismaService } from '@/prisma/prisma.service';
+import { UserExceptionMessage } from '@/user/user.exception';
 import { UserService } from '@/user/user.service';
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthModule } from './auth.module';
 import { AuthService } from './auth.service';
@@ -9,6 +11,7 @@ describe('AuthService', () => {
   let service: AuthService;
   let userService: UserService;
   let prismaService: PrismaService;
+  let jwtService: JwtService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -18,6 +21,7 @@ describe('AuthService', () => {
     service = module.get(AuthService);
     userService = module.get(UserService);
     prismaService = module.get(PrismaService);
+    jwtService = module.get(JwtService);
 
     await prismaService.cleanDatabase();
   });
@@ -28,23 +32,44 @@ describe('AuthService', () => {
 
   describe('register()', () => {
     it('should register user', async () => {
-      const user = await service.register({ username: 'john', password: 'abcde' });
+      const { access_token } = await service.register({ username: 'john', password: 'abcde' });
 
-      expect(user).toEqual({ id: expect.any(Number), username: 'john' });
+      const user = jwtService.decode(access_token);
+
+      expect(user).toEqual({ iat: expect.any(Number), id: expect.any(Number), username: 'john' });
     });
 
-    it.todo('should throw an error when trying to register duplicate user');
+    it('should throw an error when trying to register duplicate user', async () => {
+      let error: { message: string } | undefined;
+
+      try {
+        await service.register({ username: 'matt', password: 'abcde' });
+        await service.register({ username: 'matt', password: 'abcde' });
+      } catch (e) {
+        error = e;
+      }
+
+      expect(error.message).toEqual(UserExceptionMessage.DuplicateUser);
+    });
   });
 
   describe('login()', () => {
     it('should login user', async () => {
-      const user = await service.login({ username: 'john', password: 'abcde' });
+      await service.register({ username: 'mateo', password: 'abcde' });
+      const user = await service.login({ username: 'mateo', password: 'abcde' });
 
-      expect(user).toEqual({ id: expect.any(Number), username: 'john' });
+      expect(user).toEqual({ id: expect.any(Number), username: 'mateo' });
     });
 
-    it.todo('should throw an error when trying to login when user that does not exist');
-  });
+    it('should throw an error when trying to login when user that does not exist', async () => {
+      let error: { message: string } | undefined;
+      try {
+        await service.login({ username: 'jona', password: 'abcde' });
+      } catch (e) {
+        error = e;
+      }
 
-  it.todo('should logout user');
+      expect(error?.message).toEqual(UserExceptionMessage.UserNotFound);
+    });
+  });
 });
