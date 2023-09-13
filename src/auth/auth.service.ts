@@ -20,13 +20,16 @@ export class AuthService {
     return { access_token };
   }
 
-  async login(userDto: UserDto): Promise<User> {
+  async login(userDto: UserDto): Promise<{ access_token: string }> {
     const user = await this.userService.findUserByUsernameAndPassword(userDto);
 
     if (!user) {
       throw new UserNotFoundException();
     }
 
-    return user;
+    const payload = { ...user };
+    const access_token = await this.jwtService.signAsync(payload);
+
+    return { access_token };
   }
 }
