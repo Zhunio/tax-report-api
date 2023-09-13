@@ -39,12 +39,15 @@ describe('UserService', () => {
     });
   });
 
-  describe('findUserById()', () => {
-    it('should find user by id', async () => {
-      const { id } = await service.createUser({ username: 'mateo', password: 'abcde' });
-      const user = await service.findUserById(id);
+  describe('findUserByUsernameAndPassword()', () => {
+    it('should find user by username and password', async () => {
+      await service.createUser({ username: 'mateo', password: 'abcde' });
+      const user = await service.findUserByUsernameAndPassword({
+        username: 'mateo',
+        password: 'abcde',
+      });
 
-      expect(user).toEqual({ id, username: 'mateo' });
+      expect(user).toEqual({ id: expect.any(Number), username: 'mateo' });
     });
   });
 });
