@@ -4,7 +4,7 @@ import { UserExceptionMessage } from './user.exception';
 import { UserModule } from './user.module';
 import { UserService } from './user.service';
 
-describe('UserService', () => {
+describe('UserService (e2e)', () => {
   let service: UserService;
   let prisma: PrismaService;
 
