@@ -13,4 +13,8 @@ export class EnvService {
   get mediaPath(): EnvironmentVariable['TAX_REPORT_MEDIA_PATH'] {
     return this.configService.get('TAX_REPORT_MEDIA_PATH');
   }
+
+  get jwtSecret(): EnvironmentVariable['TAX_REPORT_JWT_SECRET'] {
+    return this.configService.get('TAX_REPORT_JWT_SECRET');
+  }
 }
