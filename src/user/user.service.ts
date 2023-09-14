@@ -15,6 +15,7 @@ export class UserService {
       throw new DuplicateUserException();
     }
 
+    /* eslint-disable @typescript-eslint/no-unused-vars */
     const { password, ...userFields } = await this.prismaService.user.create({
       data: userDto,
     });
@@ -29,6 +30,7 @@ export class UserService {
       return null;
     }
 
+    /* eslint-disable @typescript-eslint/no-unused-vars */
     const { password, ...userFields } = user;
 
     return userFields;

@@ -1,5 +1,5 @@
 import { UserNotFoundException } from '@/user/user.exception';
-import { User, UserDto } from '@/user/user.model';
+import { UserDto } from '@/user/user.model';
 import { UserService } from '@/user/user.service';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';

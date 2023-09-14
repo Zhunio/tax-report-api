@@ -1,4 +1,4 @@
-import { User, UserDto, UserError } from '@/user/user.model';
+import { UserDto, UserError } from '@/user/user.model';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 
