@@ -5,9 +5,11 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { GreeterController } from './greeter-test.utils';
 
 @Module({
   imports: [
+    EnvModule,
     UserModule,
     JwtModule.registerAsync({
       imports: [EnvModule],
@@ -18,6 +20,6 @@ import { AuthController } from './auth.controller';
     }),
   ],
   providers: [AuthService],
-  controllers: [AuthController],
+  controllers: [AuthController, GreeterController],
 })
 export class AuthModule {}
