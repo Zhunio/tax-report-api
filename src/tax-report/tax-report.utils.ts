@@ -5,7 +5,7 @@ export function getTaxReportFileDto({
   fiscalQuarter,
 }: TaxReportCreate) {
   const fileName = 'tax-report.xlsx';
-  const fileDestination = `/test/tax-report/${fiscalYear}/Q${fiscalQuarter}`;
+  const fileDestination = `/tax-report/${fiscalYear}/Q${fiscalQuarter}`;
 
   return { fileName, fileDestination };
 }
