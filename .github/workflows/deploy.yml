@@ -12,7 +12,7 @@ jobs:
       - name: Deploy
         uses: easingthemes/ssh-deploy@main
         with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.TAX_REPORT_SSH_PRIVATE_KEY }}
           SOURCE: "."
           REMOTE_HOST: ${{ secrets.TAX_REPORT_HOSTNAME }}
           REMOTE_USER: ${{ secrets.TAX_REPORT_SSH_USERNAME }}
