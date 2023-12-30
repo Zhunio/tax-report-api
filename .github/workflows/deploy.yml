@@ -21,7 +21,7 @@ jobs:
           rm: true # Remove target folder before upload data
       
       - name: SSH to server & Deploy app
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.0.1
         env:
           TAX_REPORT_DEPLOY_DIRECTORY: ${{ secrets.TAX_REPORT_DEPLOY_DIRECTORY }}
         with:
