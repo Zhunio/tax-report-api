@@ -10,6 +10,7 @@ jobs:
         uses: easingthemes/ssh-deploy@main
         with:
           SSH_PRIVATE_KEY: ${{ secrets.TAX_REPORT_SSH_PRIVATE_KEY }}
+          ARGS: "-rlgoDzvc -i"
           SOURCE: "."
           REMOTE_HOST: ${{ secrets.TAX_REPORT_HOSTNAME }}
           REMOTE_USER: ${{ secrets.TAX_REPORT_SSH_USERNAME }}
