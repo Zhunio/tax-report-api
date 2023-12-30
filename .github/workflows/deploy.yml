@@ -12,7 +12,6 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.TAX_REPORT_SSH_PRIVATE_KEY }}
           SOURCE: "."
           REMOTE_HOST: ${{ secrets.TAX_REPORT_HOSTNAME }}
-          TARGET: "/home/zhunio-app-tax-report-api/htdocs/tax-report-api.zhunio-app.com"
           REMOTE_USER: ${{ secrets.TAX_REPORT_SSH_USERNAME }}
           SCRIPT_AFTER: |
             echo "***DEPLOYER***: Change to deploy directory..."
