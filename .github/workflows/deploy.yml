@@ -15,14 +15,14 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.TAX_REPORT_SSH_PRIVATE_KEY }}
           SOURCE: "."
           REMOTE_HOST: ${{ secrets.TAX_REPORT_HOSTNAME }}
+          TARGET: ${{ secrets.TAX_REPORT_DEPLOY_DIRECTORY }}
           REMOTE_USER: ${{ secrets.TAX_REPORT_SSH_USERNAME }}
           SCRIPT_BEFORE: |
-            whoami
-            ls -al
+            node -v
+            pm2 -v
+            nvm -v
           SCRIPT_AFTER: |
             whoami
-            ls -al
-            echo $RSYNC_STDOUT
 
       # - name: Transfer files to server
       #   uses: appleboy/scp-action@master
