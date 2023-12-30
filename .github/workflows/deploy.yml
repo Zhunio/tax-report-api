@@ -17,21 +17,21 @@ jobs:
           SCRIPT_AFTER: |
             echo "***DEPLOYER***: Change to deploy directory..."
             cd /home/zhunio-app-tax-report-api/htdocs/tax-report-api.zhunio-app.com
-            
-            echo '***DEPLOYER***: List'
-            ls -la
-            
-            echo '***DEPLOYER*** Install dependencies'
-            npm install
+            echo $RSYNC_STDOUT
+# echo '***DEPLOYER***: List'
+# ls -la
 
-            echo '***DEPLOYER*** Build code'
-            npm run build
+# echo '***DEPLOYER*** Install dependencies'
+# npm install
 
-            echo '***DEPLOYER*** Apply migrations to database'
-            npm run migration:deploy:prod
+# echo '***DEPLOYER*** Build code'
+# npm run build
 
-            echo "***DEPLOYER*** Delete running app"
-            pm2 delete main
+# echo '***DEPLOYER*** Apply migrations to database'
+# npm run migration:deploy:prod
 
-            echo '***DEPLOYER*** Running app'
-            pm2 start dist/main.js --name main
+# echo "***DEPLOYER*** Delete running app"
+# pm2 delete main
+
+# echo '***DEPLOYER*** Running app'
+# pm2 start dist/main.js --name main
