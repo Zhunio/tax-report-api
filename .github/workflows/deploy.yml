@@ -9,42 +9,57 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Transfer files to server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.TAX_REPORT_HOSTNAME }}
-          username: ${{ secrets.TAX_REPORT_SSH_USERNAME }}
-          password: ${{ secrets.TAX_REPORT_SSH_PASSWORD }}
-          port: ${{ secrets.TAX_REPORT_SSH_PORT }}
-          source: ".,!.github"
-          target: ${{ secrets.TAX_REPORT_DEPLOY_DIRECTORY }}
-          rm: true # Remove target folder before upload data
+        - name: Deploy
+          uses: easingthemes/ssh-deploy@main
+          with:
+            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            SOURCE: "."
+            REMOTE_HOST: ${{ secrets.TAX_REPORT_HOSTNAME }}
+            REMOTE_USER: ${{ secrets.TAX_REPORT_SSH_USERNAME }}
+            SCRIPT_BEFORE: |
+              whoami
+              ls -al
+            SCRIPT_AFTER: |
+              whoami
+              ls -al
+              echo $RSYNC_STDOUT
+
+      # - name: Transfer files to server
+      #   uses: appleboy/scp-action@master
+      #   with:
+      #     host: ${{ secrets.TAX_REPORT_HOSTNAME }}
+      #     username: ${{ secrets.TAX_REPORT_SSH_USERNAME }}
+      #     password: ${{ secrets.TAX_REPORT_SSH_PASSWORD }}
+      #     port: ${{ secrets.TAX_REPORT_SSH_PORT }}
+      #     source: ".,!.github"
+      #     target: ${{ secrets.TAX_REPORT_DEPLOY_DIRECTORY }}
+      #     rm: true # Remove target folder before upload data
       
-      - name: SSH to server & Deploy app
-        uses: appleboy/ssh-action@v1.0.1
-        env:
-          TAX_REPORT_DEPLOY_DIRECTORY: ${{ secrets.TAX_REPORT_DEPLOY_DIRECTORY }}
-        with:
-          host: ${{ secrets.TAX_REPORT_HOSTNAME }}
-          username: ${{ secrets.TAX_REPORT_SSH_USERNAME }}
-          password: ${{ secrets.TAX_REPORT_SSH_PASSWORD }}
-          port: ${{ secrets.TAX_REPORT_SSH_PORT }}
-          envs: TAX_REPORT_DEPLOY_DIRECTORY
-          script: |
-            echo "***DEPLOYER***: Change to deploy directory..."
-            cd $TAX_REPORT_DEPLOY_DIRECTORY
+      # - name: SSH to server & Deploy app
+      #   uses: appleboy/ssh-action@v1.0.1
+      #   env:
+      #     TAX_REPORT_DEPLOY_DIRECTORY: ${{ secrets.TAX_REPORT_DEPLOY_DIRECTORY }}
+      #   with:
+      #     host: ${{ secrets.TAX_REPORT_HOSTNAME }}
+      #     username: ${{ secrets.TAX_REPORT_SSH_USERNAME }}
+      #     password: ${{ secrets.TAX_REPORT_SSH_PASSWORD }}
+      #     port: ${{ secrets.TAX_REPORT_SSH_PORT }}
+      #     envs: TAX_REPORT_DEPLOY_DIRECTORY
+      #     script: |
+      #       echo "***DEPLOYER***: Change to deploy directory..."
+      #       cd $TAX_REPORT_DEPLOY_DIRECTORY
             
-            echo '***DEPLOYER*** Install dependencies'
-            npm install
+      #       echo '***DEPLOYER*** Install dependencies'
+      #       npm install
 
-            echo '***DEPLOYER*** Build code'
-            npm run build
+      #       echo '***DEPLOYER*** Build code'
+      #       npm run build
 
-            echo '***DEPLOYER*** Apply migrations to database'
-            npm run migration:deploy:prod
+      #       echo '***DEPLOYER*** Apply migrations to database'
+      #       npm run migration:deploy:prod
 
-            echo "***DEPLOYER*** Delete running app"
-            pm2 delete main
+      #       echo "***DEPLOYER*** Delete running app"
+      #       pm2 delete main
 
-            echo '***DEPLOYER*** Running app'
-            pm2 start dist/main.js --name main
+      #       echo '***DEPLOYER*** Running app'
+      #       pm2 start dist/main.js --name main
