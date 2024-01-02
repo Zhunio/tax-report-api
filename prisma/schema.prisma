@@ -27,7 +27,7 @@ model Payment {
   id Int @default(autoincrement()) @id
   type String
   date String
-  number String
+  number String?
   name String
   method String
   amount String
