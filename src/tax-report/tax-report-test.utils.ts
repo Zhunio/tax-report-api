@@ -1,12 +1,12 @@
+import { INestApplication } from '@nestjs/common';
+import { File, Payment } from '@prisma/client';
+import * as request from 'supertest';
 import {
   PaymentUpdateDto,
   TaxReport,
   TaxReportCreateDto,
   TaxReportError,
-} from '@/tax-report/tax-report.model';
-import { INestApplication } from '@nestjs/common';
-import { File, Payment } from '@prisma/client';
-import * as request from 'supertest';
+} from './tax-report.model';
 
 export class TaxReportReq {
   private req: request.SuperTest<request.Test>;

@@ -1,5 +1,5 @@
-import { EnvService } from '@/env/env.service';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UnauthorizedException } from './auth.exception';
 
@@ -7,7 +7,7 @@ import { UnauthorizedException } from './auth.exception';
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly envService: EnvService,
+    private configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -34,7 +34,7 @@ export class AuthGuard implements CanActivate {
   private async decodePayloadOrThrow(token: string) {
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: this.envService.jwtSecret,
+        secret: this.configService.get<string>('TAX_REPORT_JWT_SECRET'),
       });
 
       return payload;

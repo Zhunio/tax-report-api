@@ -1,9 +1,4 @@
 import {
-  PaymentUpdateDto,
-  TaxReportCreateDto,
-} from '@/tax-report/tax-report.model';
-import { TaxReportService } from '@/tax-report/tax-report.service';
-import {
   Body,
   Controller,
   Delete,
@@ -16,6 +11,11 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TaxReport } from '@prisma/client';
+import {
+  PaymentUpdateDto,
+  TaxReportCreateDto,
+} from './tax-report.model';
+import { TaxReportService } from './tax-report.service';
 
 @Controller('tax-report')
 export class TaxReportController {

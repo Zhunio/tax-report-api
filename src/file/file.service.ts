@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { File, Prisma } from '@prisma/client';
 import { ensureFile, writeFile } from 'fs-extra';
 import { readFile } from 'fs/promises';
 import { format, join, parse } from 'path';
-import { EnvService } from '../env/env.service';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   DeleteFileException,
@@ -13,12 +13,12 @@ import {
   OverrideFileException,
   UploadFileException,
 } from './file.exception';
-import { FileUpdateDto } from './models/file.model';
+import { FileUpdateDto } from './file.model';
 
 @Injectable()
 export class FileService {
   constructor(
-    private envService: EnvService,
+    private configService: ConfigService,
     private prismaService: PrismaService,
   ) {}
 
@@ -98,7 +98,7 @@ export class FileService {
     fileName: string;
     fileDestination: string;
   }): string {
-    const mediaPath = this.envService.mediaPath;
+    const mediaPath = this.configService.get<string>('MEDIA_PATH');
     if (!mediaPath) {
       throw new UploadFileException();
     }

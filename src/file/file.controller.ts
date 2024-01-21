@@ -14,7 +14,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { File, Prisma } from '@prisma/client';
 import { Response } from 'express';
 import { FileService } from './file.service';
-import { FileUpdateDto } from './models/file.model';
+import { FileUpdateDto } from './file.model';
 
 @Controller('file')
 export class FileController {

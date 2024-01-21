@@ -1,4 +1,4 @@
-import { ExcelService } from '@/excel/excel.service';
+import { ExcelService } from './excel.service';
 import { Module } from '@nestjs/common';
 
 @Module({

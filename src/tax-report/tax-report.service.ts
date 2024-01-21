@@ -1,17 +1,17 @@
-import { ExcelService } from '@/excel/excel.service';
-import { FileService } from '@/file/file.service';
-import { PrismaService } from '@/prisma/prisma.service';
+import { Injectable } from '@nestjs/common';
+import { ExcelService } from '../excel/excel.service';
+import { FileService } from '../file/file.service';
+import { PrismaService } from '../prisma/prisma.service';
 import {
   CouldNotDeleteTaxReportException,
   DuplicateTaxReportException,
-} from '@/tax-report/tax-report.exception';
+} from './tax-report.exception';
 import {
   PaymentUpdateDto,
   TaxReport,
   TaxReportCreate,
-} from '@/tax-report/tax-report.model';
-import { getTaxReportFileDto } from '@/tax-report/tax-report.utils';
-import { Injectable } from '@nestjs/common';
+} from './tax-report.model';
+import { getTaxReportFileDto } from './tax-report.utils';
 
 @Injectable()
 export class TaxReportService {

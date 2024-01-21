@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
+import { AppModule } from '../app/app.module';
+import { PrismaService } from '../prisma/prisma.service';
 import { ExcelService } from './excel.service';
 
 const excelPaymentShape = expect.objectContaining({
@@ -14,20 +16,24 @@ const excelPaymentShape = expect.objectContaining({
 });
 
 describe('ExcelService', () => {
-  let service: ExcelService;
+  let excelService: ExcelService;
+  let prismaService: PrismaService;
   let fileBuffer: Buffer;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ExcelService],
+      imports: [AppModule],
     }).compile();
 
-    service = module.get<ExcelService>(ExcelService);
+    excelService = module.get(ExcelService);
+    prismaService = module.get(PrismaService);
     fileBuffer = await readFile(join(__dirname, './tax-report.xlsx'));
+    
+    prismaService.cleanDatabase()
   });
 
   it('should parse payments from excel file', async () => {
-    const payments = await service.parsePayments(fileBuffer);
+    const payments = await excelService.parsePayments(fileBuffer);
     expect(payments).toEqual(expect.arrayContaining([excelPaymentShape]));
   });
 });

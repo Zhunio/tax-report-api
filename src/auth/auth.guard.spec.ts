@@ -1,12 +1,12 @@
-import { AppModule } from '@/app/app.module';
-import { PrismaService } from '@/prisma/prisma.service';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { AppModule } from '../app/app.module';
+import { PrismaService } from '../prisma/prisma.service';
 import { AuthReq } from './auth-test.utils';
 import { AuthExceptionMessage, UnauthorizedException } from './auth.exception';
 import { GreeterReq } from './greeter-test.utils';
 
-describe('AuthGuard (e2e)', () => {
+describe('AuthGuard', () => {
   let app: INestApplication;
   let authReq: AuthReq;
   let greeterReq: GreeterReq;
@@ -18,7 +18,7 @@ describe('AuthGuard (e2e)', () => {
     }).compile();
 
     app = module.createNestApplication();
-    prismaService = app.get(PrismaService);
+    prismaService = module.get(PrismaService);
 
     authReq = new AuthReq(app);
     greeterReq = new GreeterReq(app);

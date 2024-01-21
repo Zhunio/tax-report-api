@@ -1,21 +1,19 @@
-import { EnvModule } from '@/env/env.module';
-import { EnvService } from '@/env/env.service';
-import { UserModule } from '@/user/user.module';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthService } from './auth.service';
+import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { GreeterController } from './greeter-test.utils';
 
 @Module({
   imports: [
-    EnvModule,
     UserModule,
     JwtModule.registerAsync({
-      imports: [EnvModule],
-      inject: [EnvService],
-      useFactory: async (envService: EnvService) => ({
-        secret: envService.jwtSecret,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'),
       }),
     }),
   ],

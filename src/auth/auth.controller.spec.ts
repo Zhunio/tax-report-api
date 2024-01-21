@@ -1,17 +1,17 @@
-import { AppModule } from '@/app/app.module';
-import { PrismaService } from '@/prisma/prisma.service';
-import { UserExceptionMessage } from '@/user/user.exception';
-import { UserError } from '@/user/user.model';
 import { INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { AppModule } from '../app/app.module';
+import { PrismaService } from '../prisma/prisma.service';
+import { UserExceptionMessage } from '../user/user.exception';
+import { UserError } from '../user/user.model';
 import { AuthReq } from './auth-test.utils';
 
-describe('AuthController (e2e)', () => {
-  let req: AuthReq;
+describe('AuthController', () => {
   let app: INestApplication;
   let prismaService: PrismaService;
   let jwtService: JwtService;
+  let authReq: AuthReq;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,10 +19,10 @@ describe('AuthController (e2e)', () => {
     }).compile();
 
     app = module.createNestApplication();
-    prismaService = app.get(PrismaService);
-    jwtService = app.get(JwtService);
+    prismaService = module.get(PrismaService);
+    jwtService = module.get(JwtService);
 
-    req = new AuthReq(app);
+    authReq = new AuthReq(app);
 
     await app.init();
     await prismaService.cleanDatabase();
@@ -30,7 +30,7 @@ describe('AuthController (e2e)', () => {
 
   describe('register()', () => {
     it('should register user', async () => {
-      const { access_token } = await req.register({ username: 'john', password: 'abcde' });
+      const { access_token } = await authReq.register({ username: 'john', password: 'abcde' });
 
       const user = jwtService.decode(access_token);
 
@@ -38,8 +38,8 @@ describe('AuthController (e2e)', () => {
     });
 
     it('should throw an error when trying to register duplicate user', async () => {
-      await req.register({ username: 'matt', password: 'abcde' });
-      const { message } = await req.register<UserError>({ username: 'matt', password: 'abcde' });
+      await authReq.register({ username: 'matt', password: 'abcde' });
+      const { message } = await authReq.register<UserError>({ username: 'matt', password: 'abcde' });
 
       expect(message).toEqual(UserExceptionMessage.DuplicateUser);
     });
@@ -47,8 +47,8 @@ describe('AuthController (e2e)', () => {
 
   describe('login()', () => {
     it('should login user', async () => {
-      await req.register({ username: 'mateo', password: 'abcde' });
-      const { access_token } = await req.login({ username: 'mateo', password: 'abcde' });
+      await authReq.register({ username: 'mateo', password: 'abcde' });
+      const { access_token } = await authReq.login({ username: 'mateo', password: 'abcde' });
 
       const user = jwtService.decode(access_token);
 
@@ -56,7 +56,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it('should throw an error when trying to login when user that does not exist', async () => {
-      const { message } = await req.login<UserError>({ username: 'jona', password: 'abcde' });
+      const { message } = await authReq.login<UserError>({ username: 'jona', password: 'abcde' });
 
       expect(message).toEqual(UserExceptionMessage.UserNotFound);
     });

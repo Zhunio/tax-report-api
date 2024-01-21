@@ -1,146 +1,96 @@
-# Tax Report API
+## Description
 
-The Tax Report API uses Nest with Prisma and Postgres database.
-
-## Prerequisites
-
-- Node.js v18
-- Docker
-
-## Getting Started
-
-In this guide, you'll learn how to start the Tax Report API.
+Simple tax report api
 
 ## Installation
-
-Install dependencies.
 
 ```bash
 $ npm install
 ```
 
-## Database
-
-Spin up dev/test databases
+## Environment Variables
 
 ```bash
-# Start dev database
-$ npm run docker:up:dev
-# Start test database
-$ npm run docker:up:test
+# mysql://USER:PASSWORD@HOST:PORT/DATABASE
+DATABASE_URL=mysql://root:password@localhost:3306/tax-report
+PORT=3000
+JWT_SECRET=jwtsecret
+MEDIA_PATH=${HOME}/tax-report-media
 ```
 
-Spin down dev/test databases
+## Start database
 
 ```bash
-# Stop dev database
-$ npm run docker:down:dev
-# Stop test database
-$ npm run docker:down:test
+$ npm run db:start
 ```
 
-Create database migration for dev/test databases
+## Stop database
 
 ```bash
-# Create migration for dev database
-$ npm run migration:create:dev
-# Create migration for test database
-$ npm run migration:create:test
+$ npm run db:stop
 ```
 
-Deploy database migrations to dev/test databases
+## Deploy migrations
 
 ```bash
-# Deploy migrations to dev database
-$ npm run migration:deploy:dev
-# Deploy migrations to test database
-$ npm run migration:deploy:test
-# Deploy migrations to production database
-$ npm run migration:deploy:prod
+$ npx prisma migrate deploy
 ```
 
-Inspect dev/test database
+## Create migration
 
 ```bash
-# Inspect dev database
-$ npm run studio:dev
-# Inspect test database
-$ npm run studio:test
-# Inspect production database
-$ npm run studio:prod
+$ npx prisma migrate dev --name {migration_name}
 ```
 
-## Running the app
-
-Once the database is running and migrations have been applied, we can start the app.
+## Prototype migration
 
 ```bash
-# Start app using dev database
+$ npx prisma db push
+```
+
+## Access phpMyAdmin
+
+```bash
+username=root
+password=password
+```
+
+## Start the app
+
+```bash
+# development
+$ npm run start
+# watch mode
 $ npm run start:dev
-# Start app using test database
-$ npm run start:test
-# Start app using production database
+# production mode
 $ npm run start:prod
 ```
 
-## Building the app
+## Stop the app
 
 ```bash
-# Build app using dev database
-$ npm run build:dev
-# Build app using test database
-$ npm run build:test
-# Build app using production database
-$ npm run build:prod
+$ npm run delete:prod
+```
+
+## Build the app
+
+```bash
+$ npm run build
 ```
 
 ## Test
 
-Once the database is running and migrations have been applied, we can test the app.
-
 ```bash
-# Run unit/integration tests
+# unit tests
 $ npm run test
-# Run unit/integration tests in watch mode
-$ npm run test -- --watch
 
-# Run unit tests
-$ npm run test:unit
-# Run unit tests in watch mode
-$ npm run test:unit -- --watch
-
-# Run integration tests
-$ npm run test:int
-# Run integration tests in watch mode
-$ npm run test:int -- --watch
-
-# Run e2e tests
-$ npm run test:e2e
-# Run e2e tests in watch
-$ npm run test:e2e -- --watch
-
+# test coverage
+$ npm run test:cov
 ```
 
 ## Formatting/Linting
 
 ```bash
-# Format code
 $ npm run format
-# Lint code
 $ npm run lint
-```
-
-## Reference
-
-```bash
-# Create migration only
-$ npx prisma migrate dev --create-only --name {{migrationName}}
-# Create migration and apply it to database
-$ npx prisma migrate dev --name {{migrationName}}
-# Apply migrations to database
-$ npx prisma migrate deploy
-# Generate Prisma client
-$ npx prisma generate
-# Prisma Studio
-$ npx prisma studio
 ```

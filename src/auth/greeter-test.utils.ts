@@ -1,4 +1,3 @@
-import { User } from '@/user/user.model';
 import {
   Controller,
   Get,
@@ -8,6 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import * as request from 'supertest';
+import { User } from '../user/user.model';
 import { AuthGuard } from './auth.guard';
 
 @Controller('greeter')
