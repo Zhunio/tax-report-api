@@ -28,7 +28,7 @@ jobs:
           host: ${{ secrets.HOSTNAME }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          envs: DEPLOY_DIRECTORY
+          envs: DEPLOY_DIRECTORY,ENV_FILE
           script: |
             echo "***DEPLOYER***: Change to deploy directory..."
             cd $DEPLOY_DIRECTORY
