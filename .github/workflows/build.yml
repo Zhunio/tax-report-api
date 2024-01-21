@@ -22,12 +22,12 @@ jobs:
         run: npm run lint
       
       - name: Start database
-        run: npm run docker:up:test
+        run: npm run db:start
       - name: Wait for database to be ready
         run: sleep 20
       - name: Apply migrations to database
-        run: npm run migration:deploy:test
+        run: npx prisma migrate deploy
       - name: Run tests
         run: npm run test
       - name: Shutdown database
-        run: npm run docker:down:test
+        run: npm run db:stop
