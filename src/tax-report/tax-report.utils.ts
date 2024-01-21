@@ -1,4 +1,4 @@
-import { TaxReportCreate } from '@/tax-report/tax-report.model';
+import { TaxReportCreate } from './tax-report.model';
 
 export function getTaxReportFileDto({
   fiscalYear,

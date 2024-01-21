@@ -1,7 +1,7 @@
-import { FileError } from '@/file/models/file.model';
 import { INestApplication } from '@nestjs/common';
 import { File } from '@prisma/client';
 import * as request from 'supertest';
+import { FileError } from './file.model';
 
 export class FileRequest {
   private req: request.SuperTest<request.Test>;

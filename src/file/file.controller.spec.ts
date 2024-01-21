@@ -1,19 +1,19 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
+import { AppModule } from '../app/app.module';
 import * as request from 'supertest';
-import { PrismaService } from '../../prisma/prisma.service';
-import { FileModule } from '../file.module';
-import { FileUpdateDto } from '../models/file.model';
+import { PrismaService } from '../prisma/prisma.service';
+import { FileUpdateDto } from './file.model';
 
-describe('FileController (e2e)', () => {
+describe('FileController', () => {
   let app: INestApplication;
   let req: request.SuperTest<request.Test>;
   let prismaService: PrismaService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [FileModule],
+      imports: [AppModule],
     }).compile();
 
     app = module.createNestApplication();
@@ -21,10 +21,7 @@ describe('FileController (e2e)', () => {
     prismaService = module.get(PrismaService);
 
     await app.init();
-  });
-
-  beforeEach(async () => {
-    await prismaService.file.deleteMany();
+    await prismaService.cleanDatabase();
   });
 
   afterAll(async () => {
@@ -34,21 +31,21 @@ describe('FileController (e2e)', () => {
   describe('createFile()', () => {
     it('should throw when creating duplicate file', async () => {
       const fileDto: Prisma.FileCreateInput = {
-        fileName: 'create-duplicate-file.txt',
-        fileDestination: '/test/file/e2e',
+        fileName: 'tax-report.xlsx',
+        fileDestination: 'tax-report/1994/Q1',
       };
 
       await req
         .post('/file')
         .field('fileName', fileDto.fileName)
         .field('fileDestination', fileDto.fileDestination)
-        .attach('file', './src/file/tests/something.txt');
+        .attach('file', './src/file/tax-report.xlsx');
 
       const { statusCode } = await req
         .post('/file')
         .field('fileName', fileDto.fileName)
         .field('fileDestination', fileDto.fileDestination)
-        .attach('file', './src/file/tests/something.txt');
+        .attach('file', './src/file/tax-report.xlsx');
 
       expect(statusCode).toEqual(HttpStatus.INTERNAL_SERVER_ERROR);
     });
@@ -56,14 +53,14 @@ describe('FileController (e2e)', () => {
     it('should create file', async () => {
       const fileDto: Prisma.FileCreateInput = {
         fileName: 'create-file.txt',
-        fileDestination: '/test/file/e2e',
+        fileDestination: 'tax-report/1994/Q2',
       };
 
       const { body, statusCode } = await req
         .post('/file')
         .field('fileName', fileDto.fileName)
         .field('fileDestination', fileDto.fileDestination)
-        .attach('file', './src/file/tests/something.txt');
+        .attach('file', './src/file/tax-report.xlsx');
 
       expect(statusCode).toEqual(HttpStatus.CREATED);
       expect(body.id).toEqual(expect.any(Number));
@@ -76,67 +73,67 @@ describe('FileController (e2e)', () => {
     it('should throw an error when trying to edit file that does not exists', async () => {
       const fileId = -1;
       const fileDto: FileUpdateDto = {
-        fileName: 'edit-file.txt',
-        fileDestination: '/test/file/e2e',
+        fileName: 'tax-report.xlsx',
+        fileDestination: 'tax-report/1993/Q1',
       };
 
       const { statusCode } = await req
         .patch(`/file/${fileId}`)
         .field('fileName', fileDto.fileName)
         .field('fileDestination', fileDto.fileDestination)
-        .attach('file', './src/file/tests/something.txt');
+        .attach('file', './src/file/tax-report.xlsx');
 
       expect(statusCode).toEqual(HttpStatus.INTERNAL_SERVER_ERROR);
     });
 
     it('should throw an error when trying to override file', async () => {
       const [fileDto1, fileDto2] = [
-        { fileName: 'edit-file-1.txt', fileDestination: '/test/file/service' },
-        { fileName: 'edit-file-2.txt', fileDestination: '/test/file/service' },
+        { fileName: 'tax-report.xlsx', fileDestination: 'tax-report/1993/Q2' },
+        { fileName: 'tax-report.xlsx', fileDestination: 'tax-report/1993/Q3' },
       ];
 
       const file1 = await req
         .post('/file')
         .field('fileName', fileDto1.fileName)
         .field('fileDestination', fileDto1.fileDestination)
-        .attach('file', './src/file/tests/something.txt');
+        .attach('file', './src/file/tax-report.xlsx');
 
       await req
         .post('/file')
         .field('fileName', fileDto2.fileName)
         .field('fileDestination', fileDto2.fileDestination)
-        .attach('file', './src/file/tests/something.txt');
+        .attach('file', './src/file/tax-report.xlsx');
 
       const { statusCode } = await req
         .patch(`/file/${file1.body.id}`)
         .field('fileName', fileDto2.fileName)
         .field('fileDestination', fileDto2.fileDestination)
-        .attach('file', './src/file/tests/something.txt');
+        .attach('file', './src/file/tax-report.xlsx');
 
       expect(statusCode).toEqual(HttpStatus.INTERNAL_SERVER_ERROR);
     });
 
     it('should edit file', async () => {
       const fileDto: Prisma.FileCreateInput = {
-        fileName: 'edit-file.txt',
-        fileDestination: '/test/file/e2e',
+        fileName: 'tax-report.xlsx',
+        fileDestination: 'tax-report/1993/Q4',
       };
       const fileUpdateDto: FileUpdateDto = {
-        fileName: 'edit-file-1.txt',
-        fileDestination: '/test/file/e2e',
+        fileName: 'tax-report.xlsx',
+        fileDestination: 'tax-report/1993/Q4',
       };
 
       const file = await req
         .post('/file')
         .field('fileName', fileDto.fileName)
         .field('fileDestination', fileDto.fileDestination)
-        .attach('file', './src/file/tests/something.txt');
+        .attach('file', './src/file/tax-report.xlsx');
 
       const { statusCode } = await req
         .patch(`/file/${file.body.id}`)
         .field('fileName', fileUpdateDto.fileName)
         .field('fileDestination', fileUpdateDto.fileDestination)
-        .attach('file', './src/file/tests/something.txt');
+        .attach('file', './src/file/tax-report.xlsx');
 
       expect(statusCode).toEqual(HttpStatus.OK);
     });
@@ -152,15 +149,15 @@ describe('FileController (e2e)', () => {
 
     it('should delete file', async () => {
       const fileDto: Prisma.FileCreateInput = {
-        fileName: 'delete-file.txt',
-        fileDestination: '/test/file/e2e',
+        fileName: 'tax-report.xlsx',
+        fileDestination: 'tax-report/1992/Q1',
       };
 
       const fileCreatedRes = await req
         .post('/file')
         .field('fileName', fileDto.fileName)
         .field('fileDestination', fileDto.fileDestination)
-        .attach('file', './src/file/tests/something.txt');
+        .attach('file', './src/file/tax-report.xlsx');
 
       const { body, statusCode } = await req.delete(`/file/${fileCreatedRes.body.id}`);
 

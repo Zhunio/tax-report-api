@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: tax-report
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - 3306:3306
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARI=1
