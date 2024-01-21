@@ -1,4 +1,9 @@
-import { Global, INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  Global,
+  INestApplication,
+  Injectable,
+  OnModuleInit,
+} from '@nestjs/common';
 import { PrismaClient, PrismaPromise } from '@prisma/client';
 
 @Injectable()

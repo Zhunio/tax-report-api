@@ -3,12 +3,7 @@ import { Test } from '@nestjs/testing';
 import { AppModule } from '../app/app.module';
 import { FileRequest } from '../file/file-request';
 import { PrismaService } from '../prisma/prisma.service';
-import {
-  TaxReportReq,
-  fileShape,
-  paymentShape,
-  taxReportShape,
-} from './tax-report-test.utils';
+import { TaxReportReq, fileShape, paymentShape, taxReportShape } from './tax-report-test.utils';
 import { TaxReportExceptionMessage } from './tax-report.exception';
 import { TaxReport, TaxReportError } from './tax-report.model';
 import { getTaxReportFileDto } from './tax-report.utils';
@@ -89,7 +84,11 @@ describe('TaxController', () => {
         await taxReportReq.editTaxReportPayment(id, payment.id, { isExempt: true });
       }
 
-      const { file, payments: paymentsUpdated, ...taxReport } = await taxReportReq.getTaxReportById(id);
+      const {
+        file,
+        payments: paymentsUpdated,
+        ...taxReport
+      } = await taxReportReq.getTaxReportById(id);
 
       expect(taxReport).toEqual(taxReportShape());
       expect(file).toEqual(fileShape());
@@ -99,7 +98,10 @@ describe('TaxController', () => {
 
   describe('deleteTaxReport()', () => {
     it('should delete tax report', async () => {
-      const taxReport = await taxReportReq.createTaxReport({ fiscalQuarter: '1', fiscalYear: '1998' });
+      const taxReport = await taxReportReq.createTaxReport({
+        fiscalQuarter: '1',
+        fiscalYear: '1998',
+      });
       const taxReportDeleted = await taxReportReq.deleteTaxReport(taxReport.id);
       const taxReportFileDeleted = await fileReq.getFileById(taxReport.fileId);
 

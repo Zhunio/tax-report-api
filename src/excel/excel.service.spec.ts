@@ -28,8 +28,8 @@ describe('ExcelService', () => {
     excelService = module.get(ExcelService);
     prismaService = module.get(PrismaService);
     fileBuffer = await readFile(join(__dirname, './tax-report.xlsx'));
-    
-    prismaService.cleanDatabase()
+
+    prismaService.cleanDatabase();
   });
 
   it('should parse payments from excel file', async () => {

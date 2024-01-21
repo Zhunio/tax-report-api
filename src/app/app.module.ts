@@ -17,7 +17,7 @@ import { UserModule } from '../user/user.module';
     FileModule,
     ExcelModule,
     AuthModule,
-    UserModule
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

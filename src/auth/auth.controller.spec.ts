@@ -39,7 +39,10 @@ describe('AuthController', () => {
 
     it('should throw an error when trying to register duplicate user', async () => {
       await authReq.register({ username: 'matt', password: 'abcde' });
-      const { message } = await authReq.register<UserError>({ username: 'matt', password: 'abcde' });
+      const { message } = await authReq.register<UserError>({
+        username: 'matt',
+        password: 'abcde',
+      });
 
       expect(message).toEqual(UserExceptionMessage.DuplicateUser);
     });
