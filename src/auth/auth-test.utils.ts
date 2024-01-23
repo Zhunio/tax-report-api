@@ -1,6 +1,6 @@
 import { UserDto, UserError } from '../user/user.model';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 
 export class AuthReq {
   private req: request.SuperTest<request.Test>;
