@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SendMailOptions } from 'nodemailer';
+import { SendMailOptions, SentMessageInfo } from 'nodemailer';
 import { AppModule } from '../app/app.module';
 import { EmailService } from './email.service';
 
@@ -23,9 +23,11 @@ describe('EmailService', () => {
 
   it('should sent email', async () => {
     spyOn((emailService as any).transporter, 'sendMail').mockResolvedValueOnce(
-      {} as SendMailOptions,
+      {} as SentMessageInfo,
     );
-    spyOn(emailService as any, 'appendEmailToSentFolder').mockRejectedValueOnce({});
+    spyOn(emailService as any, 'appendEmailToSentFolder').mockImplementationOnce(() =>
+      Promise.resolve(),
+    );
 
     const mailOptions: SendMailOptions = {
       to: 'john@live.com',
@@ -33,6 +35,8 @@ describe('EmailService', () => {
       html: '<p>Hello World</p>',
     };
 
-    await emailService.sendEmail(mailOptions);
+    const sentMailInfo = await emailService.sendEmail(mailOptions);
+
+    expect(sentMailInfo).toEqual({} as SentMessageInfo);
   });
 });
