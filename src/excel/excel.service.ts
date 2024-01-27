@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import * as currency from 'currency.js';
+import currency from 'currency.js';
 import { format } from 'date-fns';
 import { read, utils } from 'xlsx';
 import { ExcelPayment } from './excel.model';

@@ -1,6 +1,8 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import { SentMessageInfo } from 'nodemailer';
 import { AppModule } from '../app/app.module';
+import { EmailService } from '../email/email.service';
 import { FileRequest } from '../file/file-request';
 import { PrismaService } from '../prisma/prisma.service';
 import { TaxReportReq, fileShape, paymentShape, taxReportShape } from './tax-report-test.utils';
@@ -8,11 +10,14 @@ import { TaxReportExceptionMessage } from './tax-report.exception';
 import { TaxReport, TaxReportError } from './tax-report.model';
 import { getTaxReportFileDto } from './tax-report.utils';
 
+const { spyOn } = jest;
+
 describe('TaxController', () => {
   let app: INestApplication;
   let taxReportReq: TaxReportReq;
   let fileReq: FileRequest;
   let prismaService: PrismaService;
+  let emailService: EmailService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -21,6 +26,7 @@ describe('TaxController', () => {
 
     app = module.createNestApplication();
     prismaService = module.get(PrismaService);
+    emailService = module.get(EmailService);
     taxReportReq = new TaxReportReq(app);
     fileReq = new FileRequest(app);
 
@@ -118,6 +124,27 @@ describe('TaxController', () => {
       const taxReportId = -1;
       const { message } = await taxReportReq.deleteTaxReport<TaxReportError>(taxReportId);
       expect(message).toEqual(TaxReportExceptionMessage.CouldNotDeleteTaxReportException);
+    });
+  });
+
+  describe('emailTaxReport()', () => {
+    it('should email tax report', async () => {
+      const taxReport = await taxReportReq.createTaxReport({
+        fiscalQuarter: '1',
+        fiscalYear: '1993',
+      });
+
+      const exemptPayments = taxReport.payments.filter((payment) =>
+        ['Edy Garcia', 'John Ferrigno'].includes(payment.name),
+      );
+      for (const exemptPayment of exemptPayments) {
+        await taxReportReq.editTaxReportPayment(taxReport.id, exemptPayment.id, { isExempt: true });
+      }
+
+      spyOn(emailService, 'sendEmail').mockResolvedValueOnce({} as SentMessageInfo);
+
+      const sentMessageInfo = await taxReportReq.sendEmail(taxReport.id.toString());
+      expect(sentMessageInfo).toEqual({} as SentMessageInfo);
     });
   });
 

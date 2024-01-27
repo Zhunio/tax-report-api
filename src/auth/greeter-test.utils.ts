@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { User } from '../user/user.model';
 import { AuthGuard } from './auth.guard';
 

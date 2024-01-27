@@ -22,3 +22,10 @@ export interface PaymentUpdateDto {
 export interface TaxReportError {
   message: string;
 }
+
+export interface Report {
+  month: string;
+  taxableSales: string;
+  nonTaxableSales: string;
+  netTaxableSales: string;
+}

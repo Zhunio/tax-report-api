@@ -2,7 +2,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import { AppModule } from '../app/app.module';
-import * as request from 'supertest';
+import request from 'supertest';
 import { PrismaService } from '../prisma/prisma.service';
 import { FileUpdateDto } from './file.model';
 

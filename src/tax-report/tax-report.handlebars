@@ -1,0 +1,58 @@
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <title>Email</title>
+    <link
+      rel='stylesheet'
+      href='https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css'
+    />
+  </head>
+  <body>
+
+    <p class='block'>Hi,</p>
+
+    <p class='block'>
+      The taxable amount of the Net Taxable Sales of
+      {{totalNetTaxableSales}}
+      at 8.125% should be
+      {{computedTotalNetTaxableSales}}
+    </p>
+
+    <table class='block table is-striped is-hoverable p-0'>
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th>Taxable Sales</th>
+          <th>Non Taxable Sales</th>
+          <th>Net Taxable Sales</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{#each formattedReports}}
+          <tr>
+            <td>{{month}}</td>
+            <td>{{taxableSales}}</td>
+            <td>{{nonTaxableSales}}</td>
+            <td>{{netTaxableSales}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+
+      <tfoot>
+        <tr>
+          <td><b>Total</b></td>
+          <td><b>{{totalTaxableSales}}</b></td>
+          <td><b>{{totalNonTaxableSales}}</b></td>
+          <td><b>{{totalNetTaxableSales}}</b></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <p class='block'>
+      Thanks,<br />
+      Tax Report
+    </p>
+  </body>
+</html>
