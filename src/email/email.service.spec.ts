@@ -22,10 +22,10 @@ describe('EmailService', () => {
   });
 
   it('should sent email', async () => {
-    // @ts-ignore
-    spyOn(emailService.transporter, 'sendMail').mockResolvedValueOnce({} as SendMailOptions);
-    // @ts-ignore
-    spyOn(emailService, 'appendEmailToSentFolder').mockResolvedValueOnce();
+    spyOn((emailService as any).transporter, 'sendMail').mockResolvedValueOnce(
+      {} as SendMailOptions,
+    );
+    spyOn(emailService as any, 'appendEmailToSentFolder').mockRejectedValueOnce({});
 
     const mailOptions: SendMailOptions = {
       to: 'john@live.com',
