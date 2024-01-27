@@ -1,5 +1,4 @@
 import { INestApplication } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SendMailOptions } from 'nodemailer';
 import { AppModule } from '../app/app.module';
@@ -10,7 +9,6 @@ const { spyOn } = jest;
 describe('EmailService', () => {
   let app: INestApplication;
   let emailService: EmailService;
-  let configService: ConfigService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,7 +17,6 @@ describe('EmailService', () => {
 
     app = module.createNestApplication();
     emailService = module.get(EmailService);
-    configService = module.get(ConfigService);
 
     await app.init();
   });
