@@ -1,5 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { File, Payment } from '@prisma/client';
+import { SentMessageInfo } from 'nodemailer';
 import request from 'supertest';
 import {
   PaymentUpdateDto,
@@ -58,8 +59,10 @@ export class TaxReportReq {
     return body as T;
   }
 
-  async emailTaxReport(taxReportId: string): Promise<void> {
-    await this.req.post('/tax-report/email/' + taxReportId);
+  async sendEmail(taxReportId: string): Promise<SentMessageInfo> {
+    const { body } = await this.req.post('/tax-report/email/' + taxReportId);
+
+    return body as SentMessageInfo;
   }
 }
 

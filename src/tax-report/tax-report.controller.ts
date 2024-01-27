@@ -64,4 +64,9 @@ export class TaxReportController {
   ): Promise<TaxReport> {
     return this.taxReportService.deleteTaxReport(parseInt(taxReportId, 10));
   }
+
+  @Post('email/:taxReportId')
+  sendEmail(@Param('taxReportId') taxReportId: string) {
+    return this.taxReportService.sendEmail(parseInt(taxReportId));
+  }
 }
