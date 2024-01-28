@@ -142,10 +142,10 @@ export class TaxReportService {
 
   private getEmailSubject({ fiscalQuarter, fiscalYear }: TaxReport) {
     const fiscalQuarterToMonthNamesMap = {
-      0: 'December, January, February',
-      1: 'March, April, May',
-      2: 'June, July, August',
-      3: 'September, October, November',
+      1: 'December, January, February',
+      2: 'March, April, May',
+      3: 'June, July, August',
+      4: 'September, October, November',
     };
 
     const fiscalQuarterMonthNames = fiscalQuarterToMonthNamesMap[fiscalQuarter];
