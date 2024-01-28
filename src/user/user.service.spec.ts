@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../app/app.module';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserExceptionMessage } from './user.exception';
+import { UserModule } from './user.module';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
@@ -10,7 +10,7 @@ describe('UserService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [UserModule],
     }).compile();
 
     userService = module.get(UserService);

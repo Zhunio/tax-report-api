@@ -1,9 +1,9 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../app/app.module';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthReq } from './auth-test.utils';
 import { AuthExceptionMessage, UnauthorizedException } from './auth.exception';
+import { AuthModule } from './auth.module';
 import { GreeterReq } from './greeter-test.utils';
 
 describe('AuthGuard', () => {
@@ -14,7 +14,7 @@ describe('AuthGuard', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AuthModule],
     }).compile();
 
     app = module.createNestApplication();

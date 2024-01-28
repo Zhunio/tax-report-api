@@ -8,6 +8,7 @@ import { GreeterController } from './greeter-test.utils';
 
 @Module({
   imports: [
+    ConfigModule,
     UserModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

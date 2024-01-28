@@ -1,11 +1,11 @@
 import { INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../app/app.module';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserExceptionMessage } from '../user/user.exception';
 import { UserError } from '../user/user.model';
 import { AuthReq } from './auth-test.utils';
+import { AuthModule } from './auth.module';
 
 describe('AuthController', () => {
   let app: INestApplication;
@@ -15,7 +15,7 @@ describe('AuthController', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AuthModule],
     }).compile();
 
     app = module.createNestApplication();

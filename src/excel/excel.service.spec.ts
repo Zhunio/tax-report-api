@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { AppModule } from '../app/app.module';
+import { PrismaModule } from '../prisma/prisma.module';
 import { PrismaService } from '../prisma/prisma.service';
+import { ExcelModule } from './excel.module';
 import { ExcelService } from './excel.service';
 
 const excelPaymentShape = expect.objectContaining({
@@ -22,7 +23,7 @@ describe('ExcelService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [ExcelModule, PrismaModule],
     }).compile();
 
     excelService = module.get(ExcelService);
