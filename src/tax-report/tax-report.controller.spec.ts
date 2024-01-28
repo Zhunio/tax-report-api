@@ -1,13 +1,13 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { SentMessageInfo } from 'nodemailer';
-import { AppModule } from '../app/app.module';
 import { EmailService } from '../email/email.service';
 import { FileRequest } from '../file/file-request';
 import { PrismaService } from '../prisma/prisma.service';
 import { TaxReportReq, fileShape, paymentShape, taxReportShape } from './tax-report-test.utils';
 import { TaxReportExceptionMessage } from './tax-report.exception';
 import { TaxReport, TaxReportError } from './tax-report.model';
+import { TaxReportModule } from './tax-report.module';
 import { getTaxReportFileDto } from './tax-report.utils';
 
 const { spyOn } = jest;
@@ -21,7 +21,7 @@ describe('TaxController', () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [TaxReportModule],
     }).compile();
 
     app = module.createNestApplication();

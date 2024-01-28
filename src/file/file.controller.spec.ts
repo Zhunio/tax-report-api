@@ -1,10 +1,10 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
-import { AppModule } from '../app/app.module';
 import request from 'supertest';
 import { PrismaService } from '../prisma/prisma.service';
 import { FileUpdateDto } from './file.model';
+import { FileModule } from './file.module';
 
 describe('FileController', () => {
   let app: INestApplication;
@@ -13,7 +13,7 @@ describe('FileController', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [FileModule],
     }).compile();
 
     app = module.createNestApplication();
