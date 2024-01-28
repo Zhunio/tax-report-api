@@ -9,8 +9,8 @@ export class EmailService {
   constructor(private readonly configService: ConfigService) {}
 
   private readonly transporter = nodemailer.createTransport({
-    host: this.configService.get('EMAIL_TRANSPORT_HOST'),
-    port: this.configService.get('EMAIL_TRANSPORT_PORT'),
+    host: 'smtp.titan.email',
+    port: 465,
     secure: true,
     auth: {
       user: this.configService.get('EMAIL_USERNAME'),
@@ -35,8 +35,8 @@ export class EmailService {
 
   private async appendEmailToSentFolder(mailOptions: SendMailOptions) {
     const client = new ImapFlow({
-      host: this.configService.get('EMAIL_IMAP_HOST'),
-      port: this.configService.get('EMAIL_IMAP_PORT'),
+      host: 'imap.titan.email',
+      port: 993,
       secure: true,
       logger: false,
       auth: {
