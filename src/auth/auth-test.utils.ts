@@ -25,3 +25,9 @@ export class AuthReq {
     return body as T;
   }
 }
+
+export class AuthGuardMock {
+  canActivate() {
+    return true;
+  }
+}

@@ -20,5 +20,6 @@ import { GreeterController } from './greeter-test.utils';
   ],
   providers: [AuthService],
   controllers: [AuthController, GreeterController],
+  exports: [JwtModule]
 })
 export class AuthModule {}
