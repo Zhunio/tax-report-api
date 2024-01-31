@@ -7,7 +7,7 @@ import { UnauthorizedException } from './auth.exception';
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -34,7 +34,7 @@ export class AuthGuard implements CanActivate {
   private async decodePayloadOrThrow(token: string) {
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: this.configService.get<string>('TAX_REPORT_JWT_SECRET'),
+        secret: this.configService.get<string>('JWT_SECRET'),
       });
 
       return payload;

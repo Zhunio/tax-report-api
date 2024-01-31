@@ -2,6 +2,8 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import request from 'supertest';
+import { AuthGuardMock } from '../auth/auth-test.utils';
+import { AuthGuard } from '../auth/auth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { FileUpdateDto } from './file.model';
 import { FileModule } from './file.module';
@@ -14,7 +16,10 @@ describe('FileController', () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [FileModule],
-    }).compile();
+    })
+    .overrideGuard(AuthGuard)
+    .useClass(AuthGuardMock)
+    .compile();
 
     app = module.createNestApplication();
     req = request(app.getHttpServer());

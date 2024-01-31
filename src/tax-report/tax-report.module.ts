@@ -6,9 +6,10 @@ import { FileModule } from '../file/file.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { TaxReportController } from '../tax-report/tax-report.controller';
 import { TaxReportService } from '../tax-report/tax-report.service';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [PrismaModule, FileModule, ExcelModule, EmailModule, ConfigModule],
+  imports: [AuthModule,PrismaModule, FileModule, ExcelModule, EmailModule, ConfigModule],
   controllers: [TaxReportController],
   providers: [TaxReportService],
 })
