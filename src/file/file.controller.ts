@@ -8,18 +8,16 @@ import {
   Post,
   Res,
   UploadedFile,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File, Prisma } from '@prisma/client';
 import { Response } from 'express';
-import { FileService } from './file.service';
+import { Public } from '../auth/auth.guard';
 import { FileUpdateDto } from './file.model';
-import { AuthGuard } from '../auth/auth.guard';
+import { FileService } from './file.service';
 
 @Controller('file')
-@UseGuards(AuthGuard)
 export class FileController {
   constructor(private fileService: FileService) {}
 
@@ -33,6 +31,7 @@ export class FileController {
     return this.fileService.getFileBuffer(parseInt(fileId));
   }
 
+  @Public()
   @Get('download/:id')
   async downloadFile(@Param('id') fileId: string, @Res() res: Response) {
     const file = await this.fileService.findFile(parseInt(fileId, 10));
