@@ -13,7 +13,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File, Prisma } from '@prisma/client';
 import { Response } from 'express';
-import { Public } from 'src/auth/auth.guard';
+import { Public } from '../auth/auth.guard';
 import { FileUpdateDto } from './file.model';
 import { FileService } from './file.service';
 
