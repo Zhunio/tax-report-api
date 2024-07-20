@@ -1,8 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { SentMessageInfo } from 'nodemailer';
-import { AuthGuardMock } from '../auth/auth-test.utils';
-import { AuthGuard } from '../auth/auth.guard';
 import { EmailService } from '../email/email.service';
 import { FileRequest } from '../file/file-request';
 import { PrismaService } from '../prisma/prisma.service';
@@ -24,10 +22,7 @@ describe('TaxController', () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       imports: [TaxReportModule],
-    })
-      .overrideGuard(AuthGuard)
-      .useClass(AuthGuardMock)
-      .compile();
+    }).compile();
 
     app = module.createNestApplication();
     prismaService = module.get(PrismaService);

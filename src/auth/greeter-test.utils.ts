@@ -4,20 +4,19 @@ import {
   INestApplication,
   Request,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
 import request from 'supertest';
 import { User } from '../user/user.model';
-import { AuthGuard } from './auth.guard';
+import { Public } from './auth.guard';
 
 @Controller('greeter')
 export class GreeterController {
+  @Public()
   @Get('greet')
   greet(): { greet: 'Greet' } {
     return { greet: 'Greet' };
   }
 
-  @UseGuards(AuthGuard)
   @Get('safe-greet')
   safeGreet(@Request() req) {
     return req.user;

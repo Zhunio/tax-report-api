@@ -7,17 +7,14 @@ import {
   Patch,
   Post,
   UploadedFile,
-  UseGuards,
-  UseInterceptors,
+  UseInterceptors
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TaxReport } from '@prisma/client';
-import { AuthGuard } from '../auth/auth.guard';
 import { PaymentUpdateDto, TaxReportCreateDto } from './tax-report.model';
 import { TaxReportService } from './tax-report.service';
 
 @Controller('tax-report')
-@UseGuards(AuthGuard)
 export class TaxReportController {
   constructor(private readonly taxReportService: TaxReportService) {}
 
