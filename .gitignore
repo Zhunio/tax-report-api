@@ -36,3 +36,8 @@ lerna-debug.log*
 
 # Ignore .env.prod
 .env.prod
+
+# Terraform
+infrastructure/.terraform
+infrastructure/backend/.terraform
+infrastructure/backend/terraform.tfstate
