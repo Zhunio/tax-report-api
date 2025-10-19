@@ -4,13 +4,13 @@
 terraform {
   # Define the S3 backend
   backend "s3" {
-    # 💀 Name of the S3 bucket to store the state file 
+    # 1. 💀 Set the terraform backend Bucket name to the one created in infrastructure/backend/main.tf 
     bucket = "terraform-tax-report-backend-bucket"
     # Path within the bucket for the state file
     key = "global/s3/terraform.tfstate"
     # AWS region where the bucket is located
     region = "us-east-1"
-    # 💀 DynamoDB table used for state locking and consistency
+    # 2. 💀 Set the terraform backend DynamoDB table name to the one created in infrastructure/backend/main.tf
     dynamodb_table = "terraform-tax-report-backend-dynamodb"
     # Ensures the state file is encrypted at rest
     encrypt = true
