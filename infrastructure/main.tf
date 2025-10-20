@@ -17,6 +17,13 @@ terraform {
   }
 }
 
+# 💀 3. Set the terraform project name
+variable "project_name" {
+  description = "Name of the project"
+  type        = string
+  default     = "tax-report"
+}
+
 variable "tax_report_database_user" {
   description = "Username for the Tax Report database"
   type        = string
@@ -33,11 +40,9 @@ variable "tax_report_database_name" {
 }
 
 locals {
-  # 💀 3. Replace <project-name> with your project name
-  project_name                          = "tax-report"
-  tax_report_media_bucket_name          = "terraform-${local.project_name}-media-bucket"
-  tax_report_database_subnet_group_name = "terraform-${local.project_name}-database-subnet-group"
-  tax_report_database_cluster_name      = "terraform-${local.project_name}-database-cluster"
+  tax_report_media_bucket_name          = "terraform-${var.project_name}-media-bucket"
+  tax_report_database_subnet_group_name = "terraform-${var.project_name}-database-subnet-group"
+  tax_report_database_cluster_name      = "terraform-${var.project_name}-database-cluster"
 }
 
 provider "aws" {
