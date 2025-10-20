@@ -4,13 +4,13 @@
 terraform {
   # Define the S3 backend
   backend "s3" {
-    # 1. 💀 Set the terraform backend Bucket name to the one created in infrastructure/backend/main.tf 
+    # 💀 1. Set the terraform backend Bucket name to the one created in infrastructure/backend/main.tf 
     bucket = "terraform-tax-report-backend-bucket"
     # Path within the bucket for the state file
     key = "global/s3/terraform.tfstate"
     # AWS region where the bucket is located
     region = "us-east-1"
-    # 2. 💀 Set the terraform backend DynamoDB table name to the one created in infrastructure/backend/main.tf
+    # 💀 2. Set the terraform backend DynamoDB table name to the one created in infrastructure/backend/main.tf
     dynamodb_table = "terraform-tax-report-backend-dynamodb"
     # Ensures the state file is encrypted at rest
     encrypt = true
@@ -33,7 +33,7 @@ variable "tax_report_database_name" {
 }
 
 locals {
-  # 💀 Replace <project-name> with your project name
+  # 💀 3. Replace <project-name> with your project name
   project_name                          = "tax-report"
   tax_report_media_bucket_name          = "terraform-${local.project_name}-media-bucket"
   tax_report_database_subnet_group_name = "terraform-${local.project_name}-database-subnet-group"
