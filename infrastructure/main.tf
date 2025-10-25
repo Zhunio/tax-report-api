@@ -24,21 +24,6 @@ variable "project_name" {
   default     = "tax-report"
 }
 
-variable "tax_report_database_user" {
-  description = "Username for the Tax Report database"
-  type        = string
-}
-
-variable "tax_report_database_password" {
-  description = "Password for the Tax Report database"
-  type        = string
-}
-
-variable "tax_report_database_name" {
-  description = "Name of the Tax Report database"
-  type        = string
-}
-
 locals {
   tax_report_media_bucket_name          = "terraform-${var.project_name}-media-bucket"
   tax_report_database_subnet_group_name = "terraform-${var.project_name}-database-subnet-group"
@@ -60,6 +45,29 @@ data "aws_subnets" "default" {
   }
 }
 
+resource "aws_ssm_parameter" "tax_report_database_name" {
+  name  = "/${var.project_name}/database/name"
+  type  = "String"
+  value = "taxreport"
+}
+
+resource "aws_ssm_parameter" "tax_report_database_user" {
+  name  = "/${var.project_name}/database/user"
+  type  = "String"
+  value = "root"
+}
+
+resource "random_password" "tax_report_database_random_password" {
+  length  = 16
+  special = true
+}
+
+resource "aws_ssm_parameter" "tax_report_database_password" {
+  name  = "/${var.project_name}/database/password"
+  type  = "SecureString"
+  value = random_password.tax_report_database_random_password.result
+}
+
 resource "aws_s3_bucket" "tax_report_media_bucket" {
   bucket = local.tax_report_media_bucket_name
 }
@@ -71,9 +79,9 @@ resource "aws_db_subnet_group" "tax_report_database_subnet_group" {
 
 resource "aws_rds_cluster" "tax_report_database_cluster" {
   cluster_identifier   = local.tax_report_database_cluster_name
-  master_username      = var.tax_report_database_user
-  master_password      = var.tax_report_database_password
-  database_name        = var.tax_report_database_name
+  master_username      = aws_ssm_parameter.tax_report_database_user.value
+  master_password      = aws_ssm_parameter.tax_report_database_password.value
+  database_name        = aws_ssm_parameter.tax_report_database_name.value
   db_subnet_group_name = aws_db_subnet_group.tax_report_database_subnet_group.name
   engine               = "aurora-mysql"
   engine_version       = "8.0.mysql_aurora.3.10.1"
