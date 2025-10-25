@@ -15,6 +15,13 @@ terraform {
     # Ensures the state file is encrypted at rest
     encrypt = true
   }
+
+  required_providers {
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.1.0"
+    }
+  }
 }
 
 # 💀 3. Set the terraform project name
@@ -28,6 +35,7 @@ locals {
   tax_report_media_bucket_name          = "terraform-${var.project_name}-media-bucket"
   tax_report_database_subnet_group_name = "terraform-${var.project_name}-database-subnet-group"
   tax_report_database_cluster_name      = "terraform-${var.project_name}-database-cluster"
+  tax_report_database_instance_name     = "terraform-${var.project_name}-database-instance"
 }
 
 provider "aws" {
@@ -59,7 +67,7 @@ resource "aws_ssm_parameter" "tax_report_database_user" {
 
 resource "random_password" "tax_report_database_random_password" {
   length  = 16
-  special = true
+  special = false
 }
 
 resource "aws_ssm_parameter" "tax_report_database_password" {
@@ -95,3 +103,10 @@ resource "aws_rds_cluster" "tax_report_database_cluster" {
   }
 }
 
+resource "aws_rds_cluster_instance" "tax_report_database_instance" {
+  identifier         = local.tax_report_database_instance_name
+  cluster_identifier = aws_rds_cluster.tax_report_database_cluster.id
+  instance_class     = "db.serverless"
+  engine             = aws_rds_cluster.tax_report_database_cluster.engine
+  engine_version     = aws_rds_cluster.tax_report_database_cluster.engine_version
+}
