@@ -39,6 +39,7 @@ lerna-debug.log*
 
 # Terraform
 infrastructure/.terraform
+infrastructure/terraform.tfstate
 infrastructure/backend/.terraform
 infrastructure/backend/terraform.tfstate
 infrastructure/bastion/.terraform
