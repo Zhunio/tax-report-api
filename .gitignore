@@ -38,9 +38,5 @@ lerna-debug.log*
 .env.prod
 
 # Terraform
-infrastructure/.terraform
-infrastructure/terraform.tfstate
-infrastructure/backend/.terraform
-infrastructure/backend/terraform.tfstate
-infrastructure/bastion/.terraform
-infrastructure/bastion/terraform.tfstate
+infrastructure/**/.terraform
+infrastructure/**/terraform.tfstate

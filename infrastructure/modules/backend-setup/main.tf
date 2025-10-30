@@ -1,24 +1,3 @@
-# infrastructure/backend/main.tf
-
-# 💀 1. Set the terraform project name
-variable "project_name" {
-  description = "Name of the project"
-  type        = string
-  default     = "tax-report"
-}
-
-locals {
-  # Name of the S3 bucket to use for storing the terraform backend
-  backend_bucket_name = "terraform-${var.project_name}-backend-bucket"
-  # Name of the DynamoDB table to use for locking the terraform state
-  backend_dynamodb_table_name = "terraform-${var.project_name}-backend-dynamodb"
-}
-
-provider "aws" {
-  # AWS region to create resources in
-  region = "us-east-1"
-}
-
 # Create S3 bucket for storing the terraform backend
 resource "aws_s3_bucket" "backend_bucket" {
   bucket = local.backend_bucket_name

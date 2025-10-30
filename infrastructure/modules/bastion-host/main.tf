@@ -1,30 +1,3 @@
-# infrastructure/bastion/main.tf
-
-# 💀 1. Set the terraform project name
-variable "project_name" {
-  description = "Name of the project"
-  type        = string
-  default     = "tax-report"
-}
-
-# 💀 2. Set your public IP address to allow SSH access to the bastion host
-#
-# You can set this variable in your shell environment like so:
-# export TF_VAR_my_public_ip=$(curl https://api.ipify.org)
-# 
-# OR, you can pass it as a command line variable when applying terraform
-# terraform apply -var="my_public_ip=$(curl -s https://api.ipify.org)"
-variable "my_public_ip" {
-  description = "Your public IP address to allow SSH access to the bastion host"
-  type        = string
-}
-
-locals {
-  bastion_key_name            = "terraform-${var.project_name}-bastion-key"
-  bastion_security_group_name = "terraform-${var.project_name}-bastion-security-group"
-  bastion_instance_name       = "terraform-${var.project_name}-bastion-instance"
-}
-
 data "aws_vpc" "default" {
   default = true
 }
@@ -46,7 +19,6 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-# 💀 3. Generate the SSH key pair first using:
 # ssh-keygen -t rsa -b 4096 -f ~/.ssh/terraform-bastion-key
 resource "aws_key_pair" "bastion_key" {
   key_name   = local.bastion_key_name
