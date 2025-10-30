@@ -20,6 +20,10 @@ variable "environment" {
   default     = "dev"
 }
 
+provider "aws" {
+  region = "us-east-1"
+}
+
 module "media-bucket" {
   source       = "../../modules/media-bucket"
   project_name = var.project_name
