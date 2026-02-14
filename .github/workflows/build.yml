@@ -1,7 +1,6 @@
 name: Build CI/CD
 
 on:
-  workflow_call:
   push:
     branches:
       - main
