@@ -16,6 +16,9 @@ DATABASE_URL=mysql://root:password@localhost:3306/tax-report
 PORT=3000
 JWT_SECRET=jwtsecret
 MEDIA_PATH=${HOME}/tax-report-media
+EMAIL_USERNAME=john@live.com
+EMAIL_PASSWORD=password
+EMAIL_RECIPIENTS=[{ "name": "Richard Zhunio", "address": "967968+Zhunio@users.noreply.github.com" }]
 ```
 
 ## Start database

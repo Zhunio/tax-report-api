@@ -9,7 +9,7 @@ export class EmailService {
   constructor(private readonly configService: ConfigService) {}
 
   private readonly transporter = nodemailer.createTransport({
-    host: 'smtp.titan.email',
+    host: 'smtp.mail.me.com',
     port: 465,
     secure: true,
     auth: {
@@ -35,7 +35,7 @@ export class EmailService {
 
   private async appendEmailToSentFolder(mailOptions: SendMailOptions) {
     const client = new ImapFlow({
-      host: 'imap.titan.email',
+      host: 'imap.mail.me.com',
       port: 993,
       secure: true,
       logger: false,
@@ -46,18 +46,14 @@ export class EmailService {
     });
 
     const mailComposer = new MailComposer({ ...mailOptions });
-
-    const sentFolder = 'Sent';
     await client.connect();
-    const lock = await client.getMailboxLock(sentFolder);
-
+    const lock = await client.getMailboxLock('Sent Messages');
     try {
       const messageBuffer = await mailComposer.compile().build();
-      await client.append(sentFolder, messageBuffer);
-    } catch (error) {
+      await client.append('Sent Messages', messageBuffer);
+    } finally {
       lock.release();
+      await client.logout();
     }
-
-    await client.logout();
   }
 }
