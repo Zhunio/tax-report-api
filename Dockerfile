@@ -1,6 +1,6 @@
 # Simple multi-stage build for a NestJS app
 # Stage 1: install deps and build the TypeScript app
-FROM node:18-bullseye-slim AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # Stage 2: production runtime image
-FROM node:18-bullseye-slim AS runner
+FROM node:22-alpine AS runner
 
 WORKDIR /app
 
