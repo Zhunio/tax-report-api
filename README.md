@@ -2,12 +2,6 @@
 
 Simple tax report api
 
-## Installation
-
-```bash
-$ npm install
-```
-
 ## Environment Variables
 
 ```bash
@@ -21,79 +15,79 @@ EMAIL_PASSWORD=password
 EMAIL_RECIPIENTS=[{ "name": "Richard Zhunio", "address": "967968+Zhunio@users.noreply.github.com" }]
 ```
 
-## Start database
+## Installation
 
 ```bash
-$ npm run db:start
+npm install
 ```
 
-## Stop database
+## Setup Database
 
 ```bash
-$ npm run db:stop
-```
+# Start database
+docker compose up -d
 
-## Deploy migrations
+# Apply Migrations
+npx prisma migrate deploy
 
-```bash
-$ npx prisma migrate deploy
-```
+# Create Migration
+npx prisma migrate dev --name {migration_name}
 
-## Create migration
-
-```bash
-$ npx prisma migrate dev --name {migration_name}
-```
-
-## Prototype migration
-
-```bash
-$ npx prisma db push
-```
-
-## Access phpMyAdmin
-
-```bash
-username=root
-password=password
+# Stop database
+docker compose down -v
 ```
 
 ## Start the app
 
 ```bash
-# development
-$ npm run start
-# watch mode
-$ npm run start:dev
-# production mode
-$ npm run start:prod
+# Start app in dev mode
+npm run start
+
+# Start app in debug mode
+npm run start:debug
+
+# Start app in prod mode
+npm run start:prod
+
+# Build the app
+npm run build
 ```
 
-## Stop the app
+## Test the app
 
 ```bash
-$ npm run delete:prod
-```
+# Run e2e tests
+npm run test
 
-## Build the app
+# Run e2e tests in watch mode
+npm run test:watch
 
-```bash
-$ npm run build
-```
+# e2e e2e tests in debug mode
+npm run test:debug
 
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# test coverage
-$ npm run test:cov
+# Run e2e coverage
+npm run test:cov
 ```
 
 ## Formatting/Linting
 
 ```bash
-$ npm run format
-$ npm run lint
+npm run format
+npm run lint
+```
+
+## Deployment
+
+```bash
+# Install dependencies
+npm install
+
+# Build the app
+npm run build
+
+# Apply migrations
+npx prisma migrate deploy
+
+# Start the app
+npm run start:prod
 ```

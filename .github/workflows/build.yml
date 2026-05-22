@@ -31,7 +31,7 @@ jobs:
         run: npm run lint
 
       - name: Start database
-        run: npm run db:start
+        run: docker compose up -d
       - name: Wait for database to be ready
         run: sleep 20
       - name: Apply migrations to database
@@ -39,4 +39,4 @@ jobs:
       - name: Run tests
         run: npm run test
       - name: Shutdown database
-        run: npm run db:stop
+        run: docker compose down -v
