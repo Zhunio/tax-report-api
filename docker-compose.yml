@@ -17,9 +17,15 @@ services:
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       EMAIL_RECIPIENTS: ${EMAIL_RECIPIENTS}
     depends_on:
-      - tax-report-mysql
+      - tax-report-mysql:
+          condition: service_healthy
     volumes:
       - /opt/tax-report-api/media:/media
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3000']
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   tax-report-mysql:
     image: mysql:8
@@ -33,6 +39,11 @@ services:
       - '3306:3306'
     volumes:
       - tax_report_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "tax_report", "-p${MYSQL_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   tax_report_mysql:
