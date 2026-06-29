@@ -1,11 +1,38 @@
-version: '3.1'
-
 services:
-  db:
-    image: mysql
-    restart: always
-    environment:
-      MYSQL_DATABASE: tax-report
-      MYSQL_ROOT_PASSWORD: password
+  tax-report-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    restart: unless-stopped
     ports:
-      - 3306:3306
+      - '3000:3000'
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: mysql://tax_report:${MYSQL_PASSWORD}@tax-report-mysql:3306/tax_report
+      JWT_SECRET: ${JWT_SECRET}
+      MEDIA_PATH: /media
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      EMAIL_RECIPIENTS: ${EMAIL_RECIPIENTS}
+    depends_on:
+      - tax-report-mysql
+    volumes:
+      - /opt/tax-report-api/media:/media
+
+  tax-report-mysql:
+    image: mysql:8
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: tax_report
+      MYSQL_USER: tax_report
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - '3306:3306'
+    volumes:
+      - tax_report_mysql:/var/lib/mysql
+
+volumes:
+  tax_report_mysql:
