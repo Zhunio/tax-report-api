@@ -22,7 +22,7 @@ services:
     volumes:
       - /opt/tax-report-api/media:/media
     healthcheck:
-      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3000']
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3000/greeter/greet']
       interval: 5s
       timeout: 5s
       retries: 5
