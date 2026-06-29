@@ -45,5 +45,29 @@ services:
       timeout: 5s
       retries: 5
 
+  tax-report-mysql-backup:
+    image: tiredofit/db-backup:latest
+    restart: unless-stopped
+    depends_on:
+      tax-report-mysql:
+        condition: service_healthy
+    environment:
+      - TZ=America/New_York
+
+      - DB01_TYPE=mysql
+      - DB01_HOST=tax-report-mysql
+      - DB01_PORT=3306
+      - DB01_NAME=tax_report
+      - DB01_USER=tax_report
+      - DB01_PASS=${MYSQL_PASSWORD}
+
+      - DEFAULT_BACKUP_BEGIN=0 1 * * *
+      - DEFAULT_FILESYSTEM_PATH=/backup
+      - DEFAULT_CLEANUP_TIME=10080
+
+      - CONTAINER_ENABLE_MONITORING=false
+    volumes:
+      - /opt/tax-report-api/backups:/backup
+
 volumes:
   tax_report_mysql:
