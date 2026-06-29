@@ -17,8 +17,8 @@ services:
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       EMAIL_RECIPIENTS: ${EMAIL_RECIPIENTS}
     depends_on:
-      - tax-report-mysql:
-          condition: service_healthy
+      tax-report-mysql:
+        condition: service_healthy
     volumes:
       - /opt/tax-report-api/media:/media
     healthcheck:
