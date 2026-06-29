@@ -25,20 +25,11 @@ Deploy this repository as a Docker Compose service.
 * 🗄️ Database: `MySQL`
 * 📁 Media Path: `/media`
 * 🔑 Environment variables:
-
   * `JWT_SECRET`
   * `MYSQL_PASSWORD`
   * `EMAIL_USERNAME`
   * `EMAIL_PASSWORD`
   * `EMAIL_RECIPIENTS`
-
-## 📚 API Documentation
-
-Swagger documentation is available at:
-
-```text
-https://<your-domain>/docs
-```
 
 ## 💾 Database
 
