@@ -2,6 +2,8 @@
 # Stage 1: install deps and build the TypeScript app
 FROM node:22-alpine AS builder
 
+RUN apk add --no-cache wget
+
 WORKDIR /app
 
 # Copy dependency files first
