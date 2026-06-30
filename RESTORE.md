@@ -6,14 +6,7 @@
    docker compose stop tax-report-api
    ```
 
-2. ☁️ Restore the latest backup.
-
-   ```bash
-   restic \
-     -r s3:https://s3.zhunio.org/backups/tax-report-api \
-     restore latest \
-     --target /opt/tax-report-api
-   ```
+2. ☁️ Restore `/opt/tax-report-api` using the `backups` service.
 
 3. 🗄️ Start MySQL.
 
