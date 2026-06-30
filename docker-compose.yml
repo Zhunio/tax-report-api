@@ -39,6 +39,7 @@ services:
       - '3306:3306'
     volumes:
       - tax_report_mysql:/var/lib/mysql
+      - /opt/tax-report-api/backups:/backups:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "tax_report", "-p${MYSQL_PASSWORD}"]
       interval: 5s
